@@ -16,6 +16,11 @@ En lugar de presentar el reglamento únicamente como un documento estático, el 
 
 La experiencia está planteada como un **reglamento virtual interactivo y gamificado**, no como un curso convencional.
 
+
+## 🚀 Acceso al Proyecto
+Puedes visualizar la plataforma en vivo aquí: 👉 https://altarians05.github.io/ReglamentoSumoBot/index.html
+
+
 ## ✨ Características Principales
 
 * **Dashboard central:** El archivo `index.html` funciona como tablero principal para acceder a los módulos del reglamento.
