@@ -18,7 +18,7 @@ La experiencia está planteada como un **reglamento virtual interactivo y gamifi
 
 
 ## 🚀 Acceso al Proyecto
-Puedes visualizar la plataforma en vivo aquí: 👉 https://altarians05.github.io/ReglamentoSumoBot/index.html
+Puedes visualizar la plataforma en vivo aquí: 👉 https://altarians05.github.io/ReglamentoRoboFutbol/index.html
 
 
 ## ✨ Características Principales
