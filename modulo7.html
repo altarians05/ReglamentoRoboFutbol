@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 7: Acciones Permitidas, Faltas y Sanciones - RoboFútbol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Paleta Institucional */
+            --sena-green: #39A900; 
+            --sena-blue: #00324D; 
+            --sena-orange: #FF6C00;
+            --bg-body: #F4F6F9; 
+            --bg-card: #FFFFFF; 
+            --text-gray: #59667a;
+            --shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-body); color: var(--sena-blue); line-height: 1.6; }
+        
+        /* HEADER */
+        header { background-color: var(--bg-card); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .back-btn { text-decoration: none; color: var(--sena-blue); font-weight: bold; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        .back-btn:hover { color: var(--sena-orange); }
+        .module-title { font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1.7px; font-weight: 700; color: var(--sena-blue); text-align: center; display: none; }
+        @media (min-width: 768px) { .module-title { display: block; } }
+
+        /* CONTENIDO GENERAL */
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 20px; }
+        .banner-container { width: 100%; margin-bottom: 2rem; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); background: white; text-align: center; }
+        .banner-container img { width: 100%; max-height: 300px; object-fit: cover; }
+        
+        /* TARJETAS */
+        .info-card { background: var(--bg-card); border-radius: var(--radius); padding: 3rem; box-shadow: var(--shadow); border-top: 5px solid var(--sena-green); margin-bottom: 2rem; position: relative; }
+        .section-title { font-family: 'Montserrat'; color: var(--sena-green); font-size: 1.5rem; margin-bottom: 1.5rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+        
+        /* SECCIÓN 1: PRESENTACIÓN */
+        .presentation-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center; }
+        @media (min-width: 768px) { .presentation-grid { grid-template-columns: 1fr 250px; } }
+        .avatar-img { width: 100%; max-width: 220px; animation: float 3s ease-in-out infinite; margin: 0 auto; display: block; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        
+        .meta-data { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px; }
+        .tag { background: #e3f2fd; color: var(--sena-blue); padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+        
+        .btn-download { background: var(--sena-orange); color: white; text-decoration: none; padding: 12px 25px; border-radius: 50px; display: inline-flex; align-items: center; gap: 10px; font-weight: bold; margin-top: 20px; box-shadow: 0 4px 0 #d85b00; transition: transform 0.2s; }
+        .btn-download:active { transform: translateY(2px); box-shadow: 0 1px 0 #d85b00; }
+
+        /* SECCIÓN 2: INTRO INTERACTIVA (FLIP CARDS) */
+        .intro-layout { display: flex; flex-direction: column; gap: 2rem; }
+        .facilitator-area { display: flex; align-items: center; gap: 20px; background: #FFF3E0; padding: 20px; border-radius: var(--radius); border-left: 5px solid var(--sena-orange); }
+        .facilitator-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        .cards-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .flip-card { background-color: transparent; height: 200px; perspective: 1000px; cursor: pointer; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; border-radius: var(--radius); box-shadow: var(--shadow); }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: var(--radius); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        .flip-card-front { background-color: white; color: var(--sena-blue); border-bottom: 4px solid var(--sena-blue); }
+        .flip-card-back { background-color: var(--sena-blue); color: white; transform: rotateY(180deg); }
+        .icon-lg { font-size: 3rem; margin-bottom: 15px; color: var(--sena-green); }
+
+        /* SECCIÓN 3: TABLA DE EVALUACIÓN RESPONSIVA */
+        .table-responsive { overflow-x: auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; background: white; min-width: 600px; }
+        th { background: var(--sena-blue); color: white; padding: 15px; text-align: left; font-family: 'Montserrat'; font-size: 0.9rem; }
+        td { padding: 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; vertical-align: top; }
+        tr:hover { background-color: #f9f9f9; }
+        .evidence-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; }
+        .badge-product { background: #e8f5e9; color: #2e7d32; }
+        .badge-knowledge { background: #fff3e0; color: #e65100; }
+
+        /* SECCIÓN 4: CRUCIGRAMA INTERACTIVO */
+        .game-area { background: #263238; color: white; padding: 30px; border-radius: var(--radius); margin-top: 20px; }
+        .game-intro { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #546e7a; padding-bottom: 15px; }
+        .crossword-clues { margin-bottom: 20px; }
+        .clue-item { background: rgba(255,255,255,0.1); padding: 10px; margin-bottom: 10px; border-radius: 6px; display: flex; flex-direction: column; gap: 10px; }
+        .clue-text { font-weight: bold; color: #81d4fa; }
+        .word-input { background: rgba(0,0,0,0.3); border: 1px solid #546e7a; color: white; padding: 8px; border-radius: 4px; width: 100%; max-width: 200px; text-transform: uppercase; letter-spacing: 2px; }
+        .word-input:focus { outline: none; border-color: var(--sena-green); }
+        .word-input.correct { border-color: var(--sena-green); background: rgba(57, 169, 0, 0.2); }
+        .feedback-msg { font-size: 0.8rem; height: 1.2rem; margin-top: 5px; color: var(--sena-orange); }
+
+        /* OVERLAY FINALIZACION */
+        #celebration-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 50, 77, 0.95);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 2000; color: white; text-align: center; padding: 20px;
+        }
+        .anim-congrats { font-size: 4rem; margin-bottom: 20px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .btn-finish-nav { background: white; color: var(--sena-blue); padding: 15px 30px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1.1rem; transition: 0.3s; }
+        .btn-finish-nav:hover { background: var(--sena-orange); color: white; }
+
+        /* BOTON FINAL */
+        .btn-check-game { background: var(--sena-green); color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(57, 169, 0, 0.3); display: block; margin: 30px auto; transition: 0.3s; }
+        .btn-check-game:hover { transform: scale(1.05); }
+
+/* ESTILOS CAPITULO 10: NIVELES DE DISCIPLINA */
+        .levels-accordion { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+        .lvl-card { border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 8px solid; transition: transform 0.2s; }
+        .lvl-card:hover { transform: translateX(5px); }
+        .lvl-1 { border-color: #f59e0b; background: #fffbeb; }
+        .lvl-2 { border-color: #f97316; background: #fff7ed; }
+        .lvl-3 { border-color: #ef4444; background: #fef2f2; }
+        .lvl-4 { border-color: #991b1b; background: #fdf2f8; }
+        .lvl-5 { border-color: #111827; background: #f3f4f6; }
+        
+        .lvl-header { padding: 15px 20px; }
+        .lvl-header h3 { margin-bottom: 5px; font-family: 'Montserrat'; font-size: 1.2rem; }
+        .lvl-1 h3 { color: #d97706; }
+        .lvl-2 h3 { color: #c2410c; }
+        .lvl-3 h3 { color: #b91c1c; }
+        .lvl-4 h3 { color: #7f1d1d; }
+        .lvl-5 h3 { color: #111827; }
+        
+        .lvl-header span { font-size: 0.85rem; font-weight: bold; color: #4b5563; }
+        .lvl-body { padding: 0 20px 20px 20px; }
+        .lvl-body ul { margin-left: 20px; font-size: 0.95rem; color: #374151; margin-top: 10px; }
+        .lvl-body li { margin-bottom: 8px; }
+
+    
+.rb{border-left:5px solid;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:.95rem;color:var(--text-gray)}.rb b.l{display:block;font:700 .72rem Montserrat;text-transform:uppercase;margin-bottom:4px}
+.ro{background:#eef6fb;border-color:#00324D}.ro b.l{color:#00324D}.rm{background:#f0fdf4;border-color:#39A900}.rm b.l{color:#39A900}.re{background:#fff7ed;border-color:#FF6C00}.re b.l{color:#FF6C00}.rn{background:#fffbeb;border-color:#F4B223}.rn b.l{color:#b7791f}
+.sim{background:#f8fafc;border:2px solid #e2e8f0;border-radius:14px;padding:16px;margin-top:14px}.sim h4{margin-bottom:8px;color:var(--sena-blue)}
+.chk{padding:8px 12px;border-radius:8px;margin-top:8px;background:#fff;border:1px solid #e2e8f0;font-size:.92rem;animation:pop .4s both}.chk.ok{border-color:#39A900;background:#f0fdf4}.chk.bad{border-color:#e11d48;background:#fff1f2}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.opt{display:block;width:100%;text-align:left;margin-top:8px;padding:10px 14px;border:2px solid #e2e8f0;border-radius:8px;background:#fff;cursor:pointer;font:inherit;transition:.2s}.opt:hover{border-color:var(--sena-green)}.opt.ok{background:#dcfce7;border-color:#39A900}.opt.no{background:#fee2e2;border-color:#e11d48}
+.qh{font:700 .75rem Montserrat;color:var(--sena-orange);text-transform:uppercase}
+.btn-s{background:var(--sena-orange);color:#fff;border:none;padding:10px 18px;border-radius:50px;cursor:pointer;box-shadow:0 4px 0 #c45200;margin:4px;font:700 .88rem Roboto}.btn-s:active{transform:translateY(2px);box-shadow:0 2px 0 #c45200}.btn-s.b{background:var(--sena-blue);box-shadow:0 4px 0 #001a2d}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:12px}
+.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}.flip-card-front b{text-align:center}
+.acc .lvl-body{display:none}.acc.open .lvl-body{display:block}.acc .lvl-header{cursor:pointer}.acc .lvl-header::after{content:'▾ Ver qué observa el juez';font-size:.75rem;color:#6b7280;display:block;margin-top:4px}.acc.open .lvl-header::after{content:'▴ Ocultar'}
+.mt{margin-top:10px}.mt input{width:100%}.mt .bar{height:10px;border-radius:8px;background:#e2e8f0;margin-top:2px}
+.tbar{height:16px;background:#e2e8f0;border-radius:10px;overflow:hidden;margin:10px 0}.tbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#39A900,#FF6C00,#e11d48);transition:width 1s linear}
+.tj{text-align:center;font-size:1.1rem;display:flex;gap:20px;justify-content:center;flex-wrap:wrap}.tj span{background:#fff;border:2px solid #e2e8f0;border-radius:12px;padding:8px 16px;font-weight:700}
+.pt{width:100%;border-collapse:collapse;margin-top:10px;font-size:.88rem;min-width:0}.pt td,.pt th{padding:6px 10px;border-bottom:1px solid #e2e8f0}
+</style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="imagenes/Logos/sena.png" alt="Logo SENA" style="height: 50px; width: auto;">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Centro de Comando</a>
+        </div>
+       <div class="module-title">MÓDULO 7: ACCIONES PERMITIDAS, FALTAS Y SANCIONES</div>
+        <img src="imagenes/Logos/tecnoacademia.jpeg" alt="Logo Tecnoacademia" style="height: 50px; width: auto;">
+    </header>
+
+    <div class="container"><div class="banner-container"><img src="imagenes/Fondos/Titulos_Mesa de trabajo 1 copia.png" alt="Banner"></div><div class="banner-container" style="background:linear-gradient(135deg,var(--sena-blue),#001f30);padding:40px 20px;text-align:center;color:white"><i class="fas fa-flag" style="font-size:4rem;color:var(--sena-orange);margin-bottom:15px"></i><h1 style="font-family:'Montserrat';text-transform:uppercase">Acciones Permitidas, Faltas y Sanciones</h1><p style="font-size:1.1rem;opacity:.9;margin-top:10px">Reglamento Oficial: Cap. 8 y 9 · Juega limpio, juega fuerte</p></div>
+<div class="info-card"><div class="section-title"><i class="fas fa-futbol"></i> Arts. 8.1 y 8.2. Acciones Permitidas</div><div class="facilitator-area"><img class="facilitator-avatar" src="imagenes/Personajes/tecnoBot/para talleres_Mesa de trabajo 1.png" alt="TecnoBot"><div><b>"¡Maker! En RoboFútbol hay muchas cosas que sí puedes hacer con tu robot. Toca cada tarjeta para descubrirlas."</b></div></div><div class="cards-container"><div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-futbol icon-lg"></i><b>Empujar o golpear el balón</b></div><div class="flip-card-back"><p>Es la acción básica del juego: llevar el balón hacia el arco rival.</p></div></div></div><div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-shield-halved icon-lg"></i><b>Bloquear disparos</b></div><div class="flip-card-back"><p>Pon tu robot en la trayectoria del balón para detener el disparo rival.</p></div></div></div><div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-rotate icon-lg"></i><b>Girar alrededor del balón</b></div><div class="flip-card-back"><p>Rodéalo para cambiar de dirección, sin retenerlo.</p></div></div></div><div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-crosshairs icon-lg"></i><b>Interceptar trayectorias</b></div><div class="flip-card-back"><p>Corta el camino del balón antes de que llegue a su destino.</p></div></div></div></div><div class="rb ro"><b class="l">Art. 8.2 · Contacto normal</b>Los choques normales al disputar el balón son parte del juego. No son falta, salvo que cumplan una condición del Art. 9.2 o 9.3.</div><div class="sim"><h4>🎮 ¿Permitido o falta?</h4><div id="q1"></div></div></div>
+<div class="info-card"><div class="section-title"><i class="fas fa-gavel"></i> Art. 9.1. ¿Quién Decide?</div><div class="cols"><div class="chk ok">📣 <b>Solo el juez</b> declara una falta, en voz alta, y muestra la tarjeta si corresponde.</div><div class="chk ok">👀 Decide por lo que <b>ve en el momento</b>. No hay repeticiones.</div><div class="chk ok">🤔 <b>En caso de duda</b>, el juego sigue.</div><div class="chk ok">🤐 Las decisiones <b>no se discuten</b> durante el partido.</div></div><div class="sim"><h4>🎮 Piensa como el juez</h4><div id="q2"></div></div></div>
+<div class="info-card"><div class="section-title"><i class="fas fa-flag"></i> Art. 9.2. Faltas Leves (L1 a L5)</div><p style="color:var(--text-gray)">Toca cada falta para ver qué observa el juez. Una falta leve se sanciona con tiro libre indirecto para el rival.</p><div class="levels-accordion"><div class="lvl-card lvl-1 acc" onclick="this.classList.toggle('open')"><div class="lvl-header"><h3>L1 · Obstruir o empujar sin balón</h3><span>Más de 3 s seguidos</span></div><div class="lvl-body"><ul><li>Un robot empuja o bloquea a un rival más de 3 s seguidos, sin que el balón toque a ninguno de los dos y sin que el rival empuje de vuelta. Si ambos se empujan sin avanzar, es Art. 7.8 (trabados).</li></ul></div></div><div class="lvl-card lvl-1 acc" onclick="this.classList.toggle('open')"><div class="lvl-header"><h3>L2 · Embestir</h3><span>Más de 30 cm acelerando</span></div><div class="lvl-body"><ul><li>Un robot choca contra un rival tomando impulso (más de 30 cm acelerando hacia él) sin que el balón toque a ninguno de los dos.</li></ul></div></div><div class="lvl-card lvl-1 acc" onclick="this.classList.toggle('open')"><div class="lvl-header"><h3>L3 · Retener el balón</h3><span>Más de 5 s seguidos</span></div><div class="lvl-body"><ul><li>Un equipo tiene el balón encerrado, o apretado contra su robot o una pared, de modo que ningún rival puede tocarlo, por más de 5 s seguidos. Empujar el balón mientras avanza no es retener.</li></ul></div></div><div class="lvl-card lvl-1 acc" onclick="this.classList.toggle('open')"><div class="lvl-header"><h3>L4 · Levantar el balón</h3><span>Más de 10 cm del piso</span></div><div class="lvl-body"><ul><li>Un robot separa el balón del piso más de 10 cm. No cuentan los rebotes.</li></ul></div></div><div class="lvl-card lvl-1 acc" onclick="this.classList.toggle('open')"><div class="lvl-header"><h3>L5 · Tocar con la mano</h3><span>Piloto toca sin permiso</span></div><div class="lvl-body"><ul><li>Un piloto toca un robot, el balón o la cancha durante el juego sin permiso del juez, incluso para ayudar a un robot volcado o trabado.</li></ul></div></div></div><div class="sim"><h4>📏 El medidor del juez</h4><p style="font-size:.88rem">Mueve cada control: ¿cuándo se convierte en falta?</p><div class="mt"><label><b>L1 · Empujando sin balón</b>: <span id="mv0">0</span> s</label><input type="range" id="ms0" min="0" max="8" value="0" oninput="mter(0,3,8)"><div id="mr0" style="font-size:.88rem"></div></div><div class="mt"><label><b>L2 · Impulso hacia el rival</b>: <span id="mv1">0</span> cm</label><input type="range" id="ms1" min="0" max="60" value="0" oninput="mter(1,30,60)"><div id="mr1" style="font-size:.88rem"></div></div><div class="mt"><label><b>L3 · Balón retenido</b>: <span id="mv2">0</span> s</label><input type="range" id="ms2" min="0" max="10" value="0" oninput="mter(2,5,10)"><div id="mr2" style="font-size:.88rem"></div></div><div class="mt"><label><b>L4 · Altura del balón</b>: <span id="mv3">0</span> cm</label><input type="range" id="ms3" min="0" max="20" value="0" oninput="mter(3,10,20)"><div id="mr3" style="font-size:.88rem"></div></div></div></div>
+<div class="info-card"><div class="section-title"><i class="fas fa-triangle-exclamation"></i> Arts. 9.3 y 9.4. Faltas Graves y Conducta Antideportiva</div><div class="levels-accordion"><div class="lvl-card lvl-3 acc" onclick="this.classList.toggle('open')"><div class="lvl-header"><h3>G1 · Levantar y volcar a un rival</h3><span>Falta grave</span></div><div class="lvl-body"><ul><li>Un robot levanta a un rival y lo deja volcado.</li></ul></div></div><div class="lvl-card lvl-3 acc" onclick="this.classList.toggle('open')"><div class="lvl-header"><h3>G2 · Causar daño por una falta</h3><span>Falta grave</span></div><div class="lvl-body"><ul><li>Un rival sufre daño como resultado de L2 o G1.</li></ul></div></div></div><div class="sim"><h4>🎮 ¿Tarjeta amarilla o roja directa? (Art. 9.4)</h4><div id="q4"></div></div><div class="rb rn"><b class="l">Ten en cuenta</b>La amarilla es advertencia registrada; la roja es salida del partido.</div></div>
+<div class="info-card"><div class="section-title"><i class="fas fa-clipboard-list"></i> Arts. 9.5 y 9.6. Sanciones y Tarjetas</div><div class="table-responsive"><table class="pt"><tr><th>Tipo</th><th>Sanción</th></tr><tr><td>Falta leve</td><td>Tiro libre indirecto para el rival</td></tr><tr><td>2.ª falta leve del mismo robot</td><td>Tiro libre + tarjeta amarilla</td></tr><tr><td>Falta grave</td><td>Tarjeta amarilla + tiro penalti</td></tr><tr><td>Roja directa</td><td>Tarjeta roja (si fue daño intencional, también penalti)</td></tr></table></div><div class="sim"><h4>🟨🟥 El tarjetero del robot</h4><div class="tj"><span>🚩 Leves: <b id="tl">0</b></span><span>🟨 Amarillas: <b id="ta">0</b></span><span id="te">🤖 En juego</span></div><div style="text-align:center;margin-top:8px"><button class="btn-s" onclick="tj(0)">Falta leve</button><button class="btn-s" onclick="tj(1)">Falta grave</button><button class="btn-s b" onclick="tj(2)">🟥 Roja directa</button><button class="btn-s b" onclick="tjr()">↺</button></div><div id="tm"></div></div><div class="rb ro"><b class="l">Regla oficial</b>Las tarjetas de juego se anotan al robot; las de conducta, a la persona. Dos amarillas al mismo robot o persona = roja. Con roja, sale del partido y no vuelve; el equipo sigue con su otro robot, sin reemplazo. Si sale un piloto, su robot queda retirado el resto del partido.</div></div>
+<div class="info-card"><div class="section-title"><i class="fas fa-bullseye"></i> Arts. 9.7 y 9.8. Tiro Libre y Tiro Penalti</div><div class="rb ro"><b class="l">Tiro libre indirecto</b>El juez pone el balón en el punto neutral más cercano a la falta, dice «¡Posiciones!» (20 s) y los robots del equipo que cometió la falta quedan a 20 cm o más del balón. Con «¡Ya!» se juega.</div><div class="sim"><h4>⚽ Tiro penalti: ¡tienes 10 segundos!</h4><svg viewBox="0 0 260 80" style="width:100%;max-width:520px;display:block;margin:auto"><rect width="260" height="80" fill="#4d9a3a" rx="6"/><rect x="236" y="20" width="22" height="40" fill="#fde047" stroke="#b7791f"/><circle id="ball" cx="60" cy="40" r="7" fill="#fff" stroke="#FF8A00" stroke-width="2" style="transition:transform .7s"/><rect x="40" y="31" width="14" height="18" rx="3" fill="#1e63d6"/></svg><div class="tbar"><i id="pb"></i></div><div style="text-align:center"><button class="btn-s" onclick="pStart()">▶ ¡Posiciones… Ya!</button><button class="btn-s b" onclick="pShoot()">⚽ Disparar</button></div><div id="pr"></div></div><div class="rb ro"><b class="l">Regla oficial · Penalti</b>Balón en el punto de penalti, a 50 cm del arco del equipo que cometió la falta. Dispara un solo robot, elegido por su capitán. El arco queda libre: sin portero. Tras «¡Posiciones!» (20 s) y «¡Ya!», el robot tiene 10 s para disparar. Termina con gol, cuando el balón sale o se detiene, o a los 10 s.</div><div class="rb rm"><b class="l">¿Y después?</b>Si hay gol, se reinicia como después de un gol. Si no, como un balón fuera (Art. 7.5).</div></div>
+<div class="info-card"><div class="section-title"><i class="fas fa-gamepad"></i> Reto Final: Verificación Disciplinaria</div><div class="game-area"><div class="game-intro"><h3><i class="fas fa-key"></i> Autoevaluación de Reglamento</h3><p>Completa los conceptos clave según el reglamento para finalizar este módulo.</p></div><div class="crossword-clues">
+<div class="clue-item"><label class="clue-text">1. Dos amarillas al mismo robot o persona equivalen a una tarjeta ______ y salen del partido:</label><input type="text" class="word-input" id="word1" placeholder="?????"><div id="msg1" class="feedback-msg"></div></div>
+<div class="clue-item"><label class="clue-text">2. Tiro ______: disparo al arco rival, sin portero, por una falta grave:</label><input type="text" class="word-input" id="word2" placeholder="???????"><div id="msg2" class="feedback-msg"></div></div>
+<div class="clue-item"><label class="clue-text">3. Tiro ______ indirecto: reinicio a favor del equipo afectado por una falta leve:</label><input type="text" class="word-input" id="word3" placeholder="?????"><div id="msg3" class="feedback-msg"></div></div></div>
+<button class="btn-check-game" onclick="validateGame()"><i class="fas fa-check-circle"></i> Verificar y Finalizar</button></div></div>
+</div>
+<div id="celebration-overlay"><div class="anim-congrats"><i class="fas fa-flag-checkered" style="color:#FFD700;font-size:5rem"></i></div><h1 style="font-family:'Montserrat';text-transform:uppercase">¡JUEGO LIMPIO DOMINADO!</h1><p style="font-size:1.2rem;max-width:600px;margin:0 auto 20px">Conoces las acciones permitidas, las faltas, las tarjetas y los tiros libres y penaltis. El respeto por las reglas garantiza un torneo seguro y justo.</p><button class="btn-finish-nav" onclick="finishModule()">Guardar Progreso y Volver <i class="fas fa-check"></i></button></div>
+<script>
+        // RESPUESTAS CORRECTAS (Normalizadas)
+        const answers = {
+            word1: ["ROJA"],
+            word2: ["PENALTI"],
+            word3: ["LIBRE"]
+        };
+
+        function normalizeText(text) {
+            return text.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        }
+
+        function validateGame() {
+            let score = 0;
+            
+            // Validar Palabra 1
+            let val1 = normalizeText(document.getElementById('word1').value);
+            if(answers.word1.includes(val1)) {
+                document.getElementById('word1').classList.add('correct');
+                document.getElementById('msg1').innerHTML = '<i class="fas fa-check"></i> ¡Correcto!';
+                document.getElementById('msg1').style.color = '#39A900';
+                score++;
+            } else {
+                document.getElementById('msg1').innerHTML = 'Pista: Empieza con R...';
+            }
+
+            // Validar Palabra 2
+            let val2 = normalizeText(document.getElementById('word2').value);
+            if(answers.word2.includes(val2)) {
+                document.getElementById('word2').classList.add('correct');
+                document.getElementById('msg2').innerHTML = '<i class="fas fa-check"></i> ¡Correcto!';
+                document.getElementById('msg2').style.color = '#39A900';
+                score++;
+            } else {
+                document.getElementById('msg2').innerHTML = 'Pista: Empieza con P...';
+            }
+
+            // Validar Palabra 3
+            let val3 = normalizeText(document.getElementById('word3').value);
+            if(answers.word3.includes(val3)) {
+                document.getElementById('word3').classList.add('correct');
+                document.getElementById('msg3').innerHTML = '<i class="fas fa-check"></i> ¡Correcto!';
+                document.getElementById('msg3').style.color = '#39A900';
+                score++;
+            } else {
+                document.getElementById('msg3').innerHTML = 'Pista: Empieza con L...';
+            }
+
+            if(score === 3) {
+                showCelebration();
+            } else {
+                alert("Aún hay respuestas incorrectas. Revisa tus pistas.");
+            }
+        }
+
+        function showCelebration() {
+            document.getElementById('celebration-overlay').style.display = 'flex';
+        }
+
+        function finishModule() {
+            // Unificamos la llave de almacenamiento para que coincida con el sistema global
+            const storageKey = 'makerCourseState'; 
+            const savedState = sessionStorage.getItem(storageKey);
+            
+            // Definimos el módulo actual y el siguiente
+            const currentModuleId = 7;
+            const nextModuleId = 8; 
+
+            if (savedState) {
+                // Si existe un estado previo, lo actualizamos
+                const state = JSON.parse(savedState);
+                
+                // 1. Marcar Módulo 7 como Completado
+                if (!state.completedModules.includes(currentModuleId)) {
+                    state.completedModules.push(currentModuleId);
+                }
+
+                // 2. Desbloquear Módulo 8
+                if (!state.unlockedModules.includes(nextModuleId)) {
+                    state.unlockedModules.push(nextModuleId);
+                }
+
+                // 3. Guardar y regresar
+                sessionStorage.setItem(storageKey, JSON.stringify(state));
+                window.location.href = 'index.html';
+            } else {
+                // Si por alguna razón el usuario entró directo sin pasar por el inicio, 
+                // creamos un estado base para que no se pierda el progreso.
+                const newState = {
+                    unlockedModules: [1, 2, 3, 4, 5, 6, 7, 8],
+                    completedModules: [7]
+                };
+                sessionStorage.setItem(storageKey, JSON.stringify(newState));
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+<script>const $=id=>document.getElementById(id);
+function qz(id,Q){const e=$(id);let i=0,s=0;(function r(){if(i>=Q.length){e.innerHTML='<div class="chk ok"><b>🏆 '+s+'/'+Q.length+'</b> '+(s==Q.length?'¡Perfecto!':'¡Buen trabajo! Repasa y reintenta.')+'</div><button class="opt" id="rs'+id+'">↺ Reintentar</button>';$('rs'+id).onclick=()=>{i=0;s=0;r()};return}
+const q=Q[i];e.innerHTML='<div class="qh">Pregunta '+(i+1)+'/'+Q.length+' · ★ '+s+'</div><p><b>'+q[0]+'</b></p>'+q[1].map(t=>'<button class="opt">'+t+'</button>').join('')+'<div id="fb'+id+'"></div>';
+e.querySelectorAll('.opt').forEach((b,k)=>b.onclick=()=>{const ok=k==q[2];b.classList.add(ok?'ok':'no');if(ok)s++;e.querySelectorAll('.opt').forEach(x=>x.onclick=null);$('fb'+id).innerHTML='<div class="rb '+(ok?'rm':'re')+'"><b class="l">'+(ok?'¡Correcto!':'Ten en cuenta')+'</b>'+q[3]+'</div><button class="opt" style="text-align:center;font-weight:700">Siguiente →</button>';e.querySelector('#fb'+id+' .opt').onclick=()=>{i++;r()}})})()}
+const PF=['✅ Permitido / juego normal','🚩 Falta'];
+qz('q1',[['Tu robot se pone en la trayectoria del balón para detener un disparo.',PF,0,'Bloquear disparos es una acción permitida (Art. 8.1).'],['Tu robot rodea el balón para cambiar de dirección, sin retenerlo.',PF,0,'Girar alrededor del balón está permitido.'],['Dos robots chocan de frente al disputar el balón.',PF,0,'Los choques normales son parte del juego (Art. 8.2).'],['Un robot bloquea a un rival 4 s seguidos, sin que el balón toque a ninguno.',PF,1,'Es la falta leve L1 (obstruir sin balón: más de 3 s).'],['Un robot levanta el balón 15 cm del piso.',PF,1,'Falta leve L4: más de 10 cm.']]);
+qz('q2',[['¿Quién declara una falta?',['Cualquier piloto','Solo el juez','El capitán rival'],1,'Solo el juez, en voz alta.'],['Hay duda sobre si hubo falta. ¿Qué pasa?',['El juego sigue','Se repite la jugada con video','Se sortea'],0,'En caso de duda, el juego sigue; no hay repeticiones.'],['No estás de acuerdo con la decisión del juez durante el partido.',['Discutes a gritos','Respetas la decisión: no se discute','Detienes el reloj'],1,'Protestar a gritos es tarjeta amarilla (Art. 9.4).']]);
+const TJ=['🟨 Amarilla','🟥 Roja directa'];
+qz('q4',[['Protestar a gritos o discutir con el juez.',TJ,0,'Conducta con amarilla.'],['Dañar a propósito un robot rival.',TJ,1,'Roja directa.'],['Retrasar el juego a propósito.',TJ,0,'Conducta con amarilla.'],['Trampa: jugar con un robot no verificado o esconder un elemento prohibido.',TJ,1,'La trampa es roja directa.']]);
+function mter(i,th,mx){const v=+$('ms'+i).value;$('mv'+i).textContent=v;$('mr'+i).innerHTML=v>th?'<span style="color:#e11d48">🚩 ¡Falta! Superó '+th+'</span>':'<span style="color:#39A900">✅ Dentro de lo permitido (hasta '+th+')</span>'}
+let TL=0,TA=0,TO=0;
+function tjd(){$('tl').textContent=TL;$('ta').textContent=TA;$('te').textContent=TO?'🚫 Fuera del partido':'🤖 En juego'}
+function tj(k){if(TO)return;let m='';if(k==0){TL++;m=TL==2?'2.ª falta leve del mismo robot: <b>tiro libre + tarjeta amarilla</b>.':'Falta leve: <b>tiro libre indirecto</b> para el rival.';if(TL==2)TA++}
+if(k==1){TA++;m='Falta grave: <b>tarjeta amarilla + tiro penalti</b> para el rival.'}
+if(k==2){TO=1;m='🟥 <b>Roja directa</b>. Si fue daño intencional, también tiro penalti.'}
+if(TA>=2&&!TO){TO=1;m+='<br>⚠️ Dos amarillas = <b>tarjeta roja</b>.'}
+if(TO)m+='<br>Sale del partido y no vuelve; el equipo sigue con su otro robot, sin reemplazo.';tjd();$('tm').innerHTML='<div class="chk '+(TO?'bad':'ok')+'">'+m+'</div>'}
+function tjr(){TL=TA=TO=0;tjd();$('tm').innerHTML=''}
+let pt=null,pOn=0;
+function pStart(){clearInterval(pt);pOn=1;let n=0;$('ball').style.transform='';$('pb').style.transition='none';$('pb').style.width='0';setTimeout(()=>{$('pb').style.transition='width 1s linear'},30);$('pr').innerHTML='<div class="chk">«¡Posiciones!» … «¡Ya!» ⏱ El robot tiene 10 s para disparar.</div>';pt=setInterval(()=>{n++;$('pb').style.width=n*10+'%';if(n>=10){clearInterval(pt);pOn=0;$('pr').innerHTML='<div class="chk bad">⌛ Pasaron 10 s: el penalti termina sin gol. Se reinicia como un balón fuera.</div>'}},1000)}
+function pShoot(){if(!pOn)return;clearInterval(pt);pOn=0;const g=Math.random()<.7;$('ball').style.transform=g?'translateX(190px)':'translate(120px,-30px)';$('pr').innerHTML=g?'<div class="chk ok">⚽ <b>¡GOL!</b> Se reinicia como después de un gol.</div>':'<div class="chk bad">🧤 El balón salió o se detuvo: el penalti termina sin gol. Se reinicia como un balón fuera.</div>'}
+document.querySelectorAll('.mt input').forEach((_,i)=>mter(i,[3,30,5,10][i],0));
+</script>
+</body>
+</html>

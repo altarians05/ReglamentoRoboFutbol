@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 8: Palabras Clave - RoboFútbol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --sena-green: #39A900; 
+            --sena-blue: #00324D; 
+            --sena-orange: #FF6C00; 
+            --bg-body: #F4F6F9; 
+            --bg-card: #FFFFFF; 
+            --text-gray: #59667a; 
+            --shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            --radius: 12px; 
+            --sidebar-width: 320px; 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-body); color: var(--sena-blue); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        header { background-color: var(--bg-card); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 100; position: sticky; top: 0; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+
+.module-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--sena-blue);
+    text-transform: uppercase; /* Convierte a mayúsculas */
+    letter-spacing: 1.7px;      /* Espacio entre letras de 1.7 */
+    flex: 1;                    /* Ayuda a centrar o distribuir el espacio */
+    text-align: center;         /* Centra el texto entre los logos */
+}
+
+        .back-btn { text-decoration: none; color: var(--sena-blue); font-weight: bold; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        .back-btn:hover { color: var(--sena-orange); }
+
+        .main-layout { display: flex; flex: 1; max-width: 1400px; margin: 2rem auto; gap: 2rem; width: 100%; padding: 0 20px; align-items: stretch; }
+
+        .sidebar { 
+            width: var(--sidebar-width); 
+            background: var(--bg-card); 
+            border-radius: var(--radius); 
+            box-shadow: var(--shadow); 
+            padding: 1.5rem; 
+            display: flex; 
+            flex-direction: column; 
+            height: calc(100vh - 100px); /* Ajuste para scroll interno */
+            position: sticky;
+            top: 100px;
+        }
+        .sidebar h3 { font-family: 'Montserrat'; color: var(--sena-green); margin-bottom: 1rem; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 1.1rem; }
+        
+        .search-container { margin-bottom: 1rem; }
+        .search-box { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; outline: none; }
+        .search-box:focus { border-color: var(--sena-green); }
+
+        .menu-list { flex: 1; overflow-y: auto; padding-right: 5px; }
+        /* Scrollbar estilizado */
+        .menu-list::-webkit-scrollbar { width: 6px; }
+        .menu-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+        .menu-item { 
+            display: flex; align-items: center; gap: 12px; padding: 12px; margin-bottom: 6px; 
+            border-radius: 8px; cursor: pointer; transition: all 0.3s; color: var(--text-gray); 
+            font-weight: 500; border: 1px solid transparent; font-size: 0.9rem;
+        }
+        .menu-item i { width: 25px; text-align: center; color: var(--sena-blue); }
+        .menu-item:hover { background: #f0fdf4; color: var(--sena-green); }
+        .menu-item:hover i { color: var(--sena-green); }
+        .menu-item.active { background: var(--sena-green); color: white; box-shadow: 0 4px 10px rgba(57, 169, 0, 0.3); border-color: var(--sena-green); }
+        .menu-item.active i { color: white; }
+
+        .content-area { flex: 1; background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2.5rem; display: flex; flex-direction: column; min-height: 600px; }
+        
+        #definition-display { animation: fadeIn 0.4s ease-out; width: 100%; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .term-title { font-family: 'Montserrat'; color: var(--sena-blue); font-size: 2.2rem; margin-bottom: 1rem; border-bottom: 3px solid var(--sena-orange); display: inline-block; padding-bottom: 5px; }
+        
+        .def-layout { display: grid; grid-template-columns: 1fr 300px; gap: 30px; align-items: start; }
+        .def-text-side p { font-size: 1.1rem; color: #444; margin-bottom: 15px; line-height: 1.7; text-align: justify;}
+
+        /* ESTILOS DE TARJETAS */
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .info-card { padding: 15px; border-radius: 8px; font-size: 0.9rem; border-left: 5px solid; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .info-card h4 { margin-bottom: 5px; display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 700; }
+        
+        .card-tip { background: #fff8e1; border-color: #ffc107; color: #856404; }
+        .card-challenge { background: #e3f2fd; border-color: #2196f3; color: #0d47a1; }
+        .card-tech { background: #e8f5e9; border-color: #4caf50; color: #1b5e20; }
+        .card-real { background: #f3e5f5; border-color: #9c27b0; color: #4a148c; }
+
+        .def-image-side img { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: 5px solid white; margin-bottom: 15px; }
+        .image-caption { font-size: 0.8rem; color: #777; font-style: italic; text-align: center; }
+
+        .sidebar-footer { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; }
+        .progress-bar-bg { background: #eee; height: 8px; border-radius: 10px; margin: 15px 0; }
+        .progress-bar-fill { background: var(--sena-orange); height: 100%; width: 0%; border-radius: 10px; transition: 0.5s; }
+        
+        .finish-btn { width: 100%; padding: 12px; background: #ccc; color: white; border: none; border-radius: 8px; cursor: not-allowed; font-weight: bold; transition: 0.3s; }
+        .finish-btn.ready { background: var(--sena-green); cursor: pointer; box-shadow: 0 4px 15px rgba(57, 169, 0, 0.4); }
+        .finish-btn.ready:hover { transform: translateY(-2px); }
+
+        /* Estado inicial vacío */
+        .empty-state { text-align: center; color: #999; margin-top: 50px; }
+        .empty-state i { font-size: 4rem; margin-bottom: 20px; color: #ddd; }
+
+        @media (max-width: 992px) { 
+            .main-layout { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; }
+            .def-layout { grid-template-columns: 1fr; } 
+            .cards-grid { grid-template-columns: 1fr; } 
+        }
+
+/* Animación de pulso para el trofeo */
+@keyframes trophyBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+#congrats-content i {
+    animation: trophyBounce 2s infinite ease-in-out;
+}
+    
+/* Corrección de legibilidad del menú: fondo sólido y texto oscuro; los estados se manejan con clases */
+.menu-item{background:#f1f5f9;border:1px solid #cbd5e1;color:#1e293b}
+.menu-item i{color:var(--sena-blue)}
+.menu-item:hover{background:#e8f5e1;color:#2d8600;border-color:var(--sena-green)}
+.menu-item.viewed{color:#1b6e00;background:#f0fdf4;border-color:#bbf7d0}
+.menu-item.viewed::after{content:'\f00c';font-family:"Font Awesome 6 Free";font-weight:900;margin-left:auto;color:var(--sena-green)}
+.menu-item.star::before{content:'⭐';order:3}
+.menu-item.active{background:var(--sena-green);color:#fff;border-color:var(--sena-green)}
+.menu-item.active i,.menu-item.active::after{color:#fff}
+.art{width:100%;height:auto;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.12);border:4px solid #fff;margin-bottom:10px}
+.fl{animation:flt 3s infinite ease-in-out}@keyframes flt{50%{transform:translateY(-6px)}}
+.quiz-box{margin-top:22px;background:#fff7ed;border:2px dashed var(--sena-orange);border-radius:14px;padding:16px}
+.quiz-box h4{color:var(--sena-orange);margin-bottom:6px}
+.vf{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}.vf button{flex:1;min-width:120px;padding:10px;border-radius:50px;border:none;font-weight:700;cursor:pointer;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.2)}.vf .v{background:var(--sena-green)}.vf .f{background:#e11d48}.vf button:disabled{opacity:.5;cursor:default}
+.vfm{margin-top:10px;padding:8px 12px;border-radius:8px;background:#fff;font-size:.92rem}
+.nv{display:flex;justify-content:space-between;margin-top:22px;gap:10px}.nv button{padding:10px 22px;border-radius:50px;border:none;font-weight:700;cursor:pointer;background:var(--sena-blue);color:#fff}.nv button:last-child{background:var(--sena-orange)}
+.stars{font-size:.8rem;color:var(--text-gray);margin-top:6px}
+</style>
+</head>
+<body>
+
+    <header>
+    <div class="header-left">
+        <img src="imagenes/Logos/sena.png" alt="SENA Logo" style="height: 50px;">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Centro de Comando</a>
+    </div>
+
+    <div class="module-title">MÓDULO 8: PALABRAS CLAVE</div>
+
+    <img src="imagenes/Logos/tecnoacademia.jpeg" alt="TecnoAcademia Logo" style="height: 50px;">
+</header>
+
+    <div class="main-layout">
+        <aside class="sidebar">
+           <h3><i class="fas fa-gavel"></i> Glosario del Torneo</h3>
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Buscar palabra..." onkeyup="filterMenu(this.value)">
+            </div>
+            <div class="menu-list" id="menu-list">
+                </div>
+            <div class="sidebar-footer">
+                <small>Palabras exploradas: <span id="count">0</span>/<span id="total">12</span></small>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
+                <button id="btn-finish" class="finish-btn" onclick="finishModule()"><i class="fas fa-check-circle"></i> Completar Glosario</button>
+            </div>
+        </aside>
+
+<main class="content-area">
+            <div id="definition-display">
+                <div class="empty-state">
+                    <i class="fas fa-book-open" style="font-size: 4rem; color: #ddd; margin-bottom: 20px;"></i>
+                    <h2>Selecciona una palabra</h2><p>Haz clic en el menú de la izquierda para explorar el lenguaje del juego: qué significa cada término, un ejemplo y un reto relámpago.</p>
+                </div>
+            </div>
+        </main>
+<div id="congrats-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,32,77,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; opacity: 0; transition: opacity 0.5s ease;">
+    <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 550px; transform: scale(0.7); transition: transform 0.5s ease; border-top: 10px solid var(--sena-orange);" id="congrats-content">
+        <i class="fas fa-book-open" style="font-size: 5rem; color: var(--sena-orange); margin-bottom: 1rem;"></i>
+        <h1 style="font-family: 'Montserrat'; color: var(--sena-blue); margin-bottom: 1rem; text-transform: uppercase;">¡Glosario Completado!</h1>
+        <p style="font-size: 1.1rem; color: var(--text-gray); margin-bottom: 2rem;">Ya hablas el idioma del RoboFútbol: juez, piloto, capitán, cancha, faltas, tiros y tarjetas. ¡Listo para entenderte con todos en la cancha!</p>
+        <button onclick="window.location.href='index.html'" style="padding: 15px 35px; background: var(--sena-blue); color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(0,50,77,0.3); transition: transform 0.2s;">
+            <i class="fas fa-home"></i> Continuar al Comando Central
+        </button>
+    </div>
+</div>
+
+    <script>
+const G=[["Juez (árbitro)", "fa-gavel", "Persona de la organización que dirige el partido y aplica este reglamento. Durante el partido es la <strong>máxima autoridad</strong>.", "El juez de Cancha decide con base en criterios observables, sin interpretaciones subjetivas (Art. 1.2).", "Es quien da las señales: «¡Ya!», «¡Pausa!», «¡Posiciones!» y «¡Fin!».", "El juez dice «¡Pausa!» y todos sueltan los controles.", "Solo el juez declara las faltas y detiene o reinicia el reloj.", "El juez dirige el partido y aplica el reglamento.", ["🧑‍⚖️", "📣"], ["#00324D", "#0a5a85"], 1, 0, "El juez puede declarar una falta revisando una repetición en video.", 0, "No hay repeticiones: decide por lo que ve en el momento (Art. 9.1)."], ["Piloto", "fa-gamepad", "Estudiante que <strong>controla un robot</strong> desde la zona de pilotos.", "Cada equipo tiene dos pilotos, uno por robot (Art. 5.1).", "Tú manejas tu robot con el control remoto o joystick.", "Ana controla el robot 1 y Luis el robot 2.", "Los pilotos se quedan de pie en su zona, sin apoyarse ni tocar la cancha (Art. 4.5).", "Cada piloto controla un robot desde su zona.", ["🎮", "🤖"], ["#39A900", "#1d6b00"], 0, 0, "Un piloto puede apoyarse en la cancha mientras controla su robot.", 0, "Debe quedarse de pie en su zona de pilotos, sin tocar la cancha (Art. 4.5)."], ["Capitán", "fa-user-tie", "Piloto elegido por el equipo para <strong>hablar con el juez</strong>.", "Cada equipo elige un capitán entre sus pilotos. Solo él habla con el juez durante el partido, con respeto (Art. 5.2).", "Es la voz del equipo.", "Si un robot falla, el capitán avisa «¡Falla!» o «¡Peligro!» y el juez decide (Art. 7.4).", "Protestar a gritos o discutir con el juez es tarjeta amarilla (Art. 9.4).", "El capitán es el único que habla con el juez.", ["🧢", "🗣️"], ["#FF6C00", "#c24e00"], 0, 0, "Cualquier piloto puede hablar con el juez durante el partido.", 0, "Solo el capitán habla con el juez (Art. 5.2)."], ["Cancha (pista)", "fa-futbol", "Superficie de juego <strong>con sus paredes</strong>, con un arco en cada extremo.", "Superficie lisa, de lona de impresión y color opaco que contraste con el balón. Paredes en todo el borde, salvo en la abertura de los arcos (Art. 4.1 y 4.2).", "Es tu escenario de juego: todo ocurre dentro de ella.", "Cada arco mide 50 cm de ancho y 25 cm de alto: está pensado para el balón, no para los robots (Art. 4.3).", "Ningún robot puede meterse en el arco: el juez pausa, lo saca y el juego sigue como estaba.", "La cancha tiene paredes y un arco en cada extremo.", ["⚽"], ["#2f7d1f", "#1a4d10"], 1, 0, "En la cancha hay paredes en todo el borde, salvo en la abertura de los arcos.", 1, "Así es: Art. 4.2."], ["Balón fuera", "fa-arrow-up-right-from-square", "El balón pasa <strong>por encima de una pared</strong> y cae fuera de la cancha.", "El juez hace una pausa y coloca el balón en el punto neutral más cercano al lugar por donde salió (Art. 7.7).", "Un reinicio rápido que no favorece a ningún equipo.", "Tras «¡Posiciones!» ningún robot puede estar a menos de 10 cm del balón. Luego, «¡Ya!».", "Se reinicia igual cuando hay robots trabados o un penalti sin gol (Art. 7.5).", "El balón sale por encima de la pared.", ["⚽", "↗️"], ["#0369a1", "#00324D"], 1, 0, "Con balón fuera, el juez lo coloca en el punto neutral más cercano al lugar por donde salió.", 1, "Correcto: Art. 7.7."], ["Volcado", "fa-rotate", "Robot que <strong>no se apoya en sus ruedas, orugas o patas</strong> normales: de lado, boca arriba…", "Si no logra moverse por sí mismo durante 5 s, se declara inmovilizado (Art. 10.1).", "Tu robot quedó panza arriba y no puede continuar.", "Un choque lo deja de lado y no logra reincorporarse.", "Un robot volcado sin ayuda del rival no es falta. Si un robot levanta y deja volcado a un rival, es falta grave G1.", "Un robot volcado no se apoya en sus ruedas.", ["🤖", "🙃"], ["#7c3aed", "#4c1d95"], 0, 1, "Un robot de lado o boca arriba se considera volcado.", 1, "Así es: Art. 2.1."], ["Robot inmovilizado", "fa-hourglass-half", "Robot que <strong>no logra moverse por sí mismo durante 5 s</strong>: volcado, atascado, sin batería, sin comunicación o con falla.", "El juez lo declara inmovilizado, hace una pausa y el robot sale de la cancha. El juego sigue donde estaba (Art. 10.1).", "Tu robot se quedó sin poder jugar.", "Se te acaba la batería en pleno partido.", "El piloto también puede avisar «¡Falla!» y el juez lo retira de inmediato.", "Cinco segundos sin moverse: ¡inmovilizado!", ["🤖", "⏱️"], ["#64748b", "#334155"], 0, 0, "Un robot se declara inmovilizado tras 5 s sin moverse por sí mismo.", 1, "Correcto: Art. 10.1."], ["Robot retirado", "fa-door-open", "Robot que <strong>el juez saca de la cancha</strong>. No juega hasta volver a entrar.", "Sale con permiso del juez y puede volver a entrar en cualquier pausa (Art. 10.1).", "Es un tiempo fuera para arreglar tu robot.", "Cambias la batería fuera y entras con el siguiente «¡Ya!»: tu piloto lo coloca en su mitad, a más de 10 cm del balón.", "El reloj no se detiene para reparar (Art. 10.2).", "El robot retirado se arregla fuera de la cancha.", ["🤖", "🚪"], ["#0f766e", "#134e4a"], 0, 0, "Un robot retirado queda eliminado del partido para siempre.", 0, "Puede arreglarse fuera y volver en cualquier pausa (Art. 10.1)."], ["Falta", "fa-flag", "Acción que <strong>este reglamento no permite</strong> (Cap. 9). Solo la declara el juez.", "Hay faltas leves (L1 a L5) y graves (G1 y G2).", "Es una jugada que rompe las reglas.", "Embestir a un rival tomando impulso, sin que el balón toque a ninguno, es la falta leve L2.", "En caso de duda, el juego sigue.", "Solo el juez declara las faltas.", ["🚩", "📣"], ["#e11d48", "#9f1239"], 0, 0, "Cualquier piloto puede declarar una falta si la ve.", 0, "Solo la declara el juez (Art. 9.1)."], ["Tiro libre", "fa-bullseye", "Reinicio <strong>a favor del equipo afectado</strong> por una falta leve.", "El balón va al punto neutral más cercano a la falta, «¡Posiciones!» (20 s) y los robots del equipo que faltó quedan a 20 cm o más (Art. 9.7).", "Te devuelven el balón con espacio para jugar.", "Un rival te embiste: el juez te da un tiro libre indirecto.", "La 2.ª falta leve del mismo robot suma también tarjeta amarilla.", "El rival queda lejos del balón.", ["⚽", "📍"], ["#ca8a04", "#854d0e"], 1, 0, "El tiro libre es el reinicio a favor del equipo afectado por una falta leve.", 1, "Correcto: Art. 2.1 y 9.7."], ["Tiro penalti", "fa-crosshairs", "Disparo <strong>al arco rival, sin portero</strong>, por una falta grave.", "El balón va al punto de penalti, a 50 cm del arco. Dispara un solo robot, elegido por su capitán. Tiene 10 s (Art. 9.8).", "Un mano a mano entre tu robot y el arco vacío.", "Te levantan y vuelcan (G1): ¡penalti a tu favor!", "Los otros tres robots esperan en la otra mitad y no se mueven hasta que termine.", "El arco queda libre, sin portero.", ["🥅", "⚽"], ["#15803d", "#14532d"], 1, 0, "En el penalti dispara un solo robot y no hay portero.", 1, "Así es: Art. 9.8."], ["Tarjeta amarilla / roja", "fa-square", "<strong>Amarilla:</strong> advertencia registrada. <strong>Roja:</strong> salida del partido.", "Dos amarillas al mismo robot o persona = tarjeta roja (Art. 9.6).", "La amarilla avisa; la roja te saca.", "Un robot recibe una amarilla por falta grave y otra por G2: pasa a roja.", "Con roja, el robot o la persona no vuelve y el equipo sigue con su otro robot, sin reemplazo.", "Dos amarillas equivalen a una roja.", ["🟨", "🟥"], ["#f59e0b", "#b91c1c"], 0, 0, "Dos amarillas al mismo robot o persona equivalen a una tarjeta roja.", 1, "Correcto: Art. 9.6."]];
+const viewed=new Set(),stars=new Set();let cur=-1,flt='';
+const $=id=>document.getElementById(id);
+const menuContainer=$('menu-list'),displayArea=$('definition-display'),countSpan=$('count'),progressFill=$('progress-fill'),finishBtn=$('btn-finish');
+$('total').textContent=G.length;
+function renderMenu(filter=""){flt=filter;menuContainer.innerHTML="";G.forEach((g,i)=>{if(g[0].toLowerCase().includes(filter.toLowerCase())){const d=document.createElement('div');d.className='menu-item'+(viewed.has(i)?' viewed':'')+(stars.has(i)?' star':'')+(i===cur?' active':'');d.innerHTML='<i class="fas '+g[1]+'"></i> '+(i+1)+'. '+g[0];d.onclick=()=>showDefinition(i);menuContainer.appendChild(d)}})}
+function art(i){const g=G[i],e=g[8];const f=g[10]?'<rect x="20" y="30" width="260" height="160" rx="10" fill="#3f8f2e" opacity=".55"/><line x1="150" y1="30" x2="150" y2="190" stroke="#fff" stroke-width="3" opacity=".6"/><circle cx="150" cy="110" r="26" fill="none" stroke="#fff" stroke-width="3" opacity=".6"/><rect x="14" y="80" width="10" height="60" fill="#fde047"/><rect x="276" y="80" width="10" height="60" fill="#fde047"/>':'';
+return '<svg viewBox="0 0 300 220" class="art" role="img" aria-label="'+g[0]+'"><defs><linearGradient id="g'+i+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+g[9][0]+'"/><stop offset="1" stop-color="'+g[9][1]+'"/></linearGradient></defs><rect width="300" height="220" rx="14" fill="url(#g'+i+')"/>'+f+'<g class="fl">'+e.map((t,k)=>{const x=e.length==1?150:90+k*120;return '<text x="'+x+'" y="'+(e.length==1?135:125)+'" font-size="'+(e.length==1?84:62)+'" text-anchor="middle"'+(g[11]&&k==0?' transform="rotate(180 '+x+' 100)"':'')+'>'+t+'</text>'}).join('')+'</g></svg>'}
+function showDefinition(i){cur=i;const g=G[i];viewed.add(i);updateProgress();renderMenu(flt);
+displayArea.innerHTML='<h2 class="term-title">'+g[0]+'</h2><div class="def-layout"><div class="def-text-side"><p>'+g[2]+'</p><div class="cards-grid">'
++'<div class="info-card card-tip" style="background:#eef6fb;border-color:#00324D"><h4><i class="fas fa-book" style="color:#00324D"></i> Regla oficial</h4>'+g[3]+'</div>'
++'<div class="info-card card-tech" style="background:#f0fdf4;border-color:#39A900"><h4><i class="fas fa-lightbulb" style="color:#2d8600"></i> ¿Qué significa?</h4>'+g[4]+'</div>'
++'<div class="info-card card-challenge" style="background:#fff7ed;border-color:#FF6C00"><h4><i class="fas fa-futbol" style="color:#FF6C00"></i> Ejemplo</h4>'+g[5]+'</div>'
++'<div class="info-card card-real" style="background:#fffbeb;border-color:#F4B223"><h4><i class="fas fa-triangle-exclamation" style="color:#b7791f"></i> Ten en cuenta</h4>'+g[6]+'</div></div></div>'
++'<div class="def-image-side">'+art(i)+'<p class="image-caption">'+g[7]+'</p></div></div>'
++'<div class="quiz-box"><h4>⚡ Reto relámpago: ¿verdadero o falso?</h4><p><b>'+g[12]+'</b></p><div class="vf"><button class="v" onclick="vf('+i+',1,this)">✔ Verdadero</button><button class="f" onclick="vf('+i+',0,this)">✘ Falso</button></div><div id="vfm"></div></div>'
++'<div class="nv"><button onclick="showDefinition('+((i+G.length-1)%G.length)+')">◀ Anterior</button><button onclick="showDefinition('+((i+1)%G.length)+')">Siguiente ▶</button></div>';
+displayArea.style.animation='none';displayArea.offsetHeight;displayArea.style.animation='fadeIn .4s ease-out';window.scrollTo(0,0)}
+function vf(i,a,b){const ok=a==G[i][13];document.querySelectorAll('.vf button').forEach(x=>x.disabled=true);if(ok){stars.add(i);renderMenu(flt)}$('vfm').innerHTML='<div class="vfm" style="border-left:5px solid '+(ok?'#39A900':'#e11d48')+'">'+(ok?'⭐ <b>¡Correcto!</b> ':'❌ <b>Ojo:</b> ')+G[i][14]+'</div>'}
+function updateProgress(){const total=G.length,current=viewed.size;countSpan.innerText=current;progressFill.style.width=(current/total*100)+"%";if(current===total){finishBtn.classList.add('ready');finishBtn.removeAttribute('disabled')}}
+function filterMenu(v){renderMenu(v)}
+function finishModule(){
+ if(viewed.size===G.length){
+  const storageKey='makerCourseState';const savedState=sessionStorage.getItem(storageKey);
+  if(savedState){const state=JSON.parse(savedState);if(!state.completedModules.includes(8)){state.completedModules.push(8)}sessionStorage.setItem(storageKey,JSON.stringify(state))}
+  const modal=$('congrats-modal'),content=$('congrats-content');modal.style.display='flex';
+  setTimeout(()=>{modal.style.opacity='1';content.style.transform='scale(1)'},50);
+ }else{alert("Aún no has leído todas las palabras del glosario.")}
+}
+renderMenu();
+</script>
+</body>
+</html>

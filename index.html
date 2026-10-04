@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - RoboFútbol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Paleta SENA Institucional */
+            --sena-green: #39A900; 
+            --sena-blue: #00324D; 
+            --sena-orange: #FF6C00;
+            --bg-body: #F4F6F9; 
+            --bg-card: #FFFFFF; 
+            --text-gray: #59667a;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08); 
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-body); color: var(--sena-blue); line-height: 1.6; overflow-x: hidden; }
+
+        /* HEADER & BRANDING */
+        header { 
+            background-color: var(--bg-card); 
+            padding: 0.8rem 2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        .brand-area { display: flex; align-items: center; gap: 20px; }
+        .brand-logos img { height: 55px; width: auto; }
+        .program-info h1 { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: var(--sena-blue); text-transform: uppercase; letter-spacing: -0.5px; }
+        .program-info span { font-size: 0.85rem; color: var(--sena-green); font-weight: 700; }
+
+        /* CONTROLS */
+        .data-controls { display: flex; gap: 10px; align-items: center; }
+        .btn-data { background: #f0f2f5; border: none; padding: 10px 18px; border-radius: 25px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; color: var(--sena-blue); font-weight: 500; transition: all 0.2s; }
+        .btn-data:hover { background: var(--sena-blue); color: white; transform: translateY(-2px); }
+        .btn-save { border: 1px solid var(--sena-green); color: var(--sena-green); background: white; }
+        .btn-logout { background: #ffebee; color: #d32f2f; border: 1px solid #ffcdd2; }
+        #fileInput { display: none; }
+
+        /* GAMIFICATION & PROGRESS */
+        .gamification-bar { background: #fff; padding: 15px 2rem; border-bottom: 1px solid #e0e0e0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .progress-wrapper { width: 100%; max-width: 800px; display: flex; align-items: center; gap: 15px; }
+        .progress-container { flex: 1; background: #e9ecef; height: 14px; border-radius: 10px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--sena-green), #86efac, var(--sena-orange)); transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .level-badge { background: var(--sena-orange); color: white; padding: 4px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; box-shadow: 0 4px 10px rgba(255,108,0,0.3); }
+        
+        #completionMessage { display: none; color: var(--sena-green); font-weight: bold; font-family: 'Montserrat'; animation: pulse 2s infinite; font-size: 1.1rem; }
+        @keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
+
+        /* INSIGNIAS SECTION */
+        .insignia-container { display: flex; justify-content: center; gap: 25px; padding: 20px; background: #fdfdfd; flex-wrap: wrap; }
+        .insignia-item { text-align: center; width: 100px; transition: transform 0.3s ease; filter: grayscale(1) opacity(0.3); position: relative; }
+        .insignia-item.earned { filter: grayscale(0) opacity(1); }
+        .insignia-item:hover { transform: scale(1.2) translateY(-5px); z-index: 10; }
+        .insignia-item img { width: 80px; height: 80px; object-fit: contain; cursor: help; }
+        .insignia-name { display: none; position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); background: var(--sena-blue); color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 5px; white-space: nowrap; }
+        .insignia-item:hover .insignia-name { display: block; }
+
+        /* BIENVENIDA */
+        .welcome-section { 
+            max-width: 1000px; 
+            margin: 3rem auto; 
+            display: flex; 
+            align-items: center; 
+            gap: 40px; 
+            background-color: white; /* Color base */
+            background-image: url('imagenes/Fondos/Titulos_Mesa de trabajo 1 copia.png'); /* Ruta solicitada */
+            background-size: cover;
+            background-position: center;
+            padding: 2.5rem; 
+            border-radius: var(--radius); 
+            box-shadow: var(--shadow);
+            position: relative; /* Necesario para el pseudo-elemento */
+            z-index: 1;
+            overflow: hidden; /* Mantiene el pseudo-elemento dentro de los bordes redondeados */
+        }
+
+	/* Capa de opacidad para el fondo de bienvenida */
+        .welcome-section::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.9); /* Controla la opacidad aquí (0.85 es 85% blanco) */
+            z-index: -1;
+        }
+
+        .welcome-text { flex: 2; text-align: justify; }
+        .welcome-text h2 { font-family: 'Montserrat'; color: var(--sena-blue); margin-bottom: 1rem; font-size: 1.8rem; }
+       .welcome-text p { font-size: 1.15rem; color: var(--text-gray); margin-bottom: 1rem; }
+        .avatar-maker { width: 180px; height: 180px; border-radius: 50%; object-fit: cover; border: 5px solid white; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+
+        /* DASHBOARD GRID */
+        .container { max-width: 1200px; margin: 0 auto 4rem; padding: 0 20px; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        
+        .module-card { 
+            background: var(--bg-card); 
+            border-radius: var(--radius); 
+            padding: 2.5rem; 
+            box-shadow: var(--shadow); 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer; 
+            position: relative; 
+            min-height: 280px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        /* Capa de opacidad para fondos de tarjeta */
+        .module-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.88); /* Contraste para legibilidad */
+            z-index: -1;
+            transition: background 0.3s;
+        }
+
+        .module-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.12); }
+        .module-card:hover::before { background: rgba(255, 255, 255, 0.8); }
+
+        .module-card.locked { opacity: 0.8; pointer-events: none; }
+        .module-card.locked::after {
+            content: "\f023";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: rgba(0,50,77,0.1);
+        }
+
+        .card-number-bg { position: absolute; top: -10px; right: 10px; font-size: 5rem; font-weight: 900; color: rgba(0,0,0,0.10); font-family: 'Montserrat'; z-index: 0; }
+        .card-icon { font-size: 1.8rem; color: var(--sena-green); margin-bottom: 1.2rem; background: white; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        
+        .card-content h3 { font-family: 'Montserrat'; font-size: 1.1rem; margin-bottom: 0.8rem; color: var(--sena-blue); }
+        .card-content p { font-size: 1.02rem; color: var(--text-gray); }
+
+        .status-indicator { font-size: 0.8rem; font-weight: 700; margin-top: 1.5rem; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-indicator.completed { color: var(--sena-green); }
+        .status-indicator.active { color: var(--sena-orange); }
+        .status-indicator.locked { color: #cbd5e0; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 50, 77, 0.95); display: flex; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(8px); }
+        .modal-box { background: white; padding: 3.5rem; border-radius: 24px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .modal-input { width: 100%; padding: 15px; margin-bottom: 18px; border: 2px solid #edf2f7; border-radius: 12px; outline: none; transition: border 0.3s; }
+        .modal-input:focus { border-color: var(--sena-green); }
+        .modal-btn { background: var(--sena-green); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; font-size: 1rem; transition: background 0.3s; }
+        .modal-btn:hover { background: #2d8600; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.8rem; border-top: 1px solid #e2e8f0; }
+
+        @media (max-width: 768px) {
+            .welcome-section { flex-direction: column; text-align: center; margin: 1rem; }
+            header { flex-direction: column; gap: 15px; }
+        }
+
+/* --- ESTILOS DE LA ANIMACIÓN FINAL (Fuegos Artificiales) --- */
+        .finale-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999;
+            display: none; /* Oculto por defecto */
+            justify-content: center; align-items: center;
+            overflow: hidden;
+        }
+        .finale-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10000; pointer-events: none;
+        }
+        .finale-content {
+            position: relative; z-index: 10001; text-align: center;
+            animation: zoomInReward 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 20px;
+        }
+        .finale-title {
+            font-family: 'Montserrat', sans-serif; font-size: 3rem;
+            color: #fff; margin-bottom: 10px; text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(255, 108, 0, 0.8);
+            line-height: 1.2;
+        }
+        .finale-subtitle {
+            font-size: 1.5rem; color: #a0aec0; margin-bottom: 30px;
+        }
+        .btn-finish-anim {
+            background: var(--sena-orange); color: white; border: none;
+            padding: 15px 40px; border-radius: 50px; font-size: 1.2rem;
+            font-weight: bold; cursor: pointer;
+            box-shadow: 0 0 25px rgba(255, 108, 0, 0.5);
+            transition: transform 0.2s;
+        }
+        .btn-finish-anim:hover {
+            transform: scale(1.1); background: white; color: var(--sena-orange);
+        }
+        @keyframes zoomInReward {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            .finale-title { font-size: 2rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-area">
+            <div class="brand-logos"><img src="imagenes/Logos/sena.png" alt="SENA"></div>
+            <div class="program-info">
+                <h1>REGLAMENTO OFICIAL DE COMPETENCIA: TORNEO ROBOFÚTBOL</h1>
+                <span>TECNOACADEMIA MANIZALES - UNIVERSIDAD DE CALDAS</span>
+            </div>
+        </div>
+        <div class="data-controls">
+            <img src="imagenes/Logos/tecnoacademia.jpeg" alt="TecnoAcademia" style="height:50px; margin-left:15px; border-radius: 8px;">
+        </div>
+
+    </header>
+
+    <div class="gamification-bar">
+        <div class="progress-wrapper">
+            <span style="font-weight: bold; font-size: 0.9rem;">MISIÓN:</span>
+            <div class="progress-container">
+                <div class="progress-fill" id="globalProgress"></div>
+            </div>
+            <div class="level-badge" id="levelBadge">Piloto Novato</div>
+        </div>
+        <div id="completionMessage">✨ ¡GOLAZO, MAKER! GUÍA COMPLETADA CON ÉXITO ✨</div>
+    </div>
+
+    <div class="insignia-container">
+        <div class="insignia-item" id="badge-0">
+            <img src="imagenes/Insignias/insignias-mohs/00-insignias-mohs-bronce.png" alt="Insignia Bronce">
+            <span class="insignia-name">Insignia Bronce (Debutante)</span>
+        </div>
+        <div class="insignia-item" id="badge-1">
+            <img src="imagenes/Insignias/insignias-mohs/01-insignias-mohs-plata.png" alt="Insignia Plata">
+            <span class="insignia-name">Insignia Plata (Técnico de Juego)</span>
+        </div>
+        <div class="insignia-item" id="badge-2">
+            <img src="imagenes/Insignias/insignias-mohs/02-insignias-mohs-oro.png" alt="Insignia Oro">
+            <span class="insignia-name">Insignia Oro (Goleador)</span>
+        </div>
+        <div class="insignia-item" id="badge-3">
+            <img src="imagenes/Insignias/insignias-mohs/03-insignias-mohs-esmeralda.png" alt="Insignia Esmeralda">
+            <span class="insignia-name">Insignia Esmeralda (Estratega)</span>
+        </div>
+        <div class="insignia-item" id="badge-4">
+            <img src="imagenes/Insignias/insignias-mohs/04-insignias-mohs-rubi.png" alt="Insignia Rubí">
+            <span class="insignia-name">Insignia Rubí (Leyenda de la Cancha)</span>
+        </div>
+    </div>
+
+    <div class="container" id="app">
+        
+        <div class="welcome-section">
+            <div class="welcome-text">
+                <h2>¡Bienvenido al Torneo Oficial de RoboFútbol!</h2>
+                <p>La robótica competitiva es el escenario ideal para poner a prueba tu ingenio, tu estrategia y tu trabajo en equipo. En este recorrido, <strong>el reglamento oficial</strong> será tu herramienta para entender cómo se juega un partido, qué debe cumplir tu robot y cómo competir con ética, transparencia y juego limpio. Cada artículo que comprendas te prepara para entrar a la cancha el día del torneo.</p>
+                <p>Completa cada módulo de este manual interactivo, supera los retos y reclama las insignias que te acreditan como un gran competidor. <strong>¿Estás listo para salir a la cancha y marcar tu primer gol?</strong></p>
+            </div>
+            <img src="imagenes/Personajes/Maker/facilitador ingeniería y diseño.png" class="avatar-maker" alt="Facilitador Maker">
+        </div>
+
+        <div class="dashboard-grid">
+            
+            <div class="module-card" id="card-0" onclick="app.openModule(0)" style="background-image: url('imagenes/Fondos/academia_Makers_exterior_1.png');">
+                <div class="card-number-bg">00</div>
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-id-card"></i></div>
+                    <h3>DISPOSICIONES GENERALES</h3>
+                    <p>Conoce el espíritu del torneo (STEM, trabajo en equipo y juego limpio), la autoridad del juez de Cancha, cómo se arma un equipo (2 robots, 2 pilotos, capitán y docente) y por qué hay que llegar a tiempo. (Cap. 1 y 5)</p>
+                </div>
+                <div class="status-indicator" id="status-0"><i class="fas fa-lock"></i> Bloqueado</div>
+            </div>
+
+            <div class="module-card" id="card-1" onclick="app.openModule(1)" style="background-image: url('imagenes/Fondos/Bosque_1.png');">
+                <div class="card-number-bg">01</div>
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-robot"></i></div>
+                    <h3>ESPECIFICACIONES TÉCNICAS DEL ROBOT</h3>
+                    <p>Revisa el tamaño (cubo de 25 cm), el peso máximo de 750 g, materiales, baterías seguras, el control remoto y los elementos prohibidos. (Art. 3.1 a 3.6)</p>
+                </div>
+                <div class="status-indicator" id="status-1"><i class="fas fa-lock"></i> Bloqueado</div>
+            </div>
+
+            <div class="module-card" id="card-2" onclick="app.openModule(2)" style="background-image: url('imagenes/Fondos/Fondo_futurista.png');">
+                <div class="card-number-bg">02</div>
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-clipboard-check"></i></div>
+                    <h3>VERIFICACIÓN DEL ROBOT, CANCHA Y BALÓN</h3>
+                    <p>Aprende cómo el juez verifica (homologa) tu robot antes de jugar y cómo son la cancha, las paredes, los arcos, el balón y las zonas de pilotos y de espera. (Art. 3.7 y Cap. 4)</p>
+                </div>
+                <div class="status-indicator" id="status-2"><i class="fas fa-lock"></i> Bloqueado</div>
+            </div>
+
+            <div class="module-card" id="card-3" onclick="app.openModule(3)" style="background-image: url('imagenes/Fondos/Fondo_ingenieria.png');">
+                <div class="card-number-bg">03</div>
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-trophy"></i></div>
+                    <h3>SISTEMA DE COMPETENCIA Y SORTEOS</h3>
+                    <p>Descubre los formatos del torneo (fase de grupos + eliminación directa, o eliminación directa pura), los sorteos públicos, los puntos 3-1-0, las llaves, el tercer puesto y la Gran Final. (Art. 6.1 a 6.3, 6.6 y 6.7)</p>
+                </div>
+                <div class="status-indicator" id="status-3"><i class="fas fa-lock"></i> Bloqueado</div>
+            </div>
+
+            <div class="module-card" id="card-4" onclick="app.openModule(4)" style="background-image: url('imagenes/Fondos/Fondo_laboratorio.png');">
+                <div class="card-number-bg">04</div>
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-futbol"></i></div>
+                    <h3>ESTRUCTURA Y DESARROLLO DEL PARTIDO</h3>
+                    <p>Aprende cómo se juega: 2 tiempos de 3 minutos, el inicio con «¡Listos… ya!», las señales del juez, los goles, el balón fuera, los robots trabados, las pausas y el descanso. (Cap. 7)</p>
+                </div>
+                <div class="status-indicator" id="status-4"><i class="fas fa-lock"></i> Bloqueado</div>
+            </div>
+
+            <div class="module-card" id="card-5" onclick="app.openModule(5)" style="background-image: url('imagenes/Fondos/salón_1.png');">
+                <div class="card-number-bg">05</div>
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-triangle-exclamation"></i></div>
+                    <h3>SITUACIONES ESPECIALES Y FALLAS</h3>
+                    <p>Analiza qué pasa cuando un robot queda inmovilizado o volcado, las reparaciones y cambios de batería, los daños, la interferencia de control, los fallos técnicos y cuando un equipo se queda sin robots. (Cap. 10)</p>
+                </div>
+                <div class="status-indicator" id="status-5"><i class="fas fa-lock"></i> Bloqueado</div>
+            </div>
+
+            <div class="module-card" id="card-6" onclick="app.openModule(6)" style="background-image: url('imagenes/Fondos/aula tecnologica.png');">
+                <div class="card-number-bg">06</div>
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-scale-balanced"></i></div>
+                    <h3>CRITERIOS OBJETIVOS DE DESEMPATE</h3>
+                    <p>Estudia cómo se desempata: enfrentamiento directo, menor peso total, sorteo, mejores terceros y, en eliminación directa, tiempo extra a gol de oro y tanda de penaltis. (Art. 6.4, 6.5 y 6.8)</p>
+                </div>
+                <div class="status-indicator" id="status-6"><i class="fas fa-lock"></i> Bloqueado</div>
+            </div>
+
+            <div class="module-card" id="card-7" onclick="app.openModule(7)" style="background-image: url('imagenes/Fondos/salon de quimica.png');">
+    <div class="card-number-bg">07</div>
+    <div class="card-content">
+        <div class="card-icon"><i class="fas fa-flag"></i></div>
+        <h3>ACCIONES PERMITIDAS, FALTAS Y SANCIONES</h3>
+        <p>Distingue lo que sí se puede hacer con el balón de las faltas leves y graves, la conducta antideportiva, las tarjetas amarilla y roja, el tiro libre y el tiro penalti. (Cap. 8 y 9)</p>
+    </div>
+    <div class="status-indicator" id="status-7"><i class="fas fa-play-circle"></i> Disponible</div>
+</div>
+
+            <div class="module-card" id="card-8" onclick="app.openModule(8)" style="background-image: url('imagenes/Fondos/Fondo_ingenieria.png'); border-top: 5px solid var(--sena-blue);">
+                <div class="card-number-bg">08</div>
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-book"></i></div>
+                    <h3>PALABRAS CLAVE</h3>
+                    <p>Consulta en cualquier momento qué significan los términos del juego: juez, piloto, capitán, cancha, balón fuera, volcado, robot inmovilizado, falta, tiro libre, tiro penalti y tarjetas. (Cap. 2)</p>
+                </div>
+                <div class="status-indicator" id="status-8"><i class="fas fa-book-open"></i> Consulta</div>
+            </div>
+
+        </div>
+    </div>
+
+<div id="finaleOverlay" class="finale-overlay">
+        <canvas id="fireworksCanvas" class="finale-canvas"></canvas>
+        <div class="finale-content">
+            <h1 class="finale-title">¡FELICITACIONES<br>LEYENDA DE LA CANCHA!</h1>
+            <p class="finale-subtitle">Has completado todos los módulos y dominado el reglamento de RoboFútbol.</p>
+            <button class="btn-finish-anim" onclick="app.closeFinale()">CONTINUAR AL DASHBOARD</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 TecnoAcademia Manizales - Línea de Ingeniería y Diseño</p>
+        <p>Servicio Nacional de Aprendizaje SENA</p>
+    </footer>
+
+<script>
+        const app = {
+            storageKey: 'makerCourseState',
+            state: { 
+                studentName: "", 
+                studentId: "", 
+                unlockedModules: [0, 7, 8], 
+                completedModules: [] 
+            },
+            fireworksInterval: null, // Variable para controlar la animación
+init: function() {
+                const saved = sessionStorage.getItem('makerCourseState');
+                if(saved) {
+                    this.state = { ...this.state, ...JSON.parse(saved) };
+                } else {
+                    // Si es la primera vez que ingresa, inicializamos el guardado
+                    this.saveLocal();
+                }
+                
+                // CORRECCIÓN: Se cambia renderUI() por updateUI() para evitar errores
+                this.updateUI();
+            },
+                        
+            saveLocal: function() { 
+                sessionStorage.setItem(this.storageKey, JSON.stringify(this.state)); 
+            },            
+            updateUI: function() {                
+                const totalModules = 9; 
+                // Filtramos para asegurar que cuenta solo módulos validos (0-8)
+                const completedCount = this.state.completedModules.filter(m => m >= 0 && m <= 8).length;
+                
+                // Evitar más del 100% si hubiera errores en datos
+                const percent = Math.min(100, Math.round((completedCount / totalModules) * 100));
+                
+                document.getElementById('globalProgress').style.width = percent + '%';
+                
+                // Actualizar Niveles
+                let lvl = "Piloto Novato";
+                if(percent >= 20) lvl = "Constructor Táctico";
+                if(percent >= 40) lvl = "Ingeniero de Juego";
+                if(percent >= 60) lvl = "Estratega de la Cancha";
+                if(percent >= 80) lvl = "Capitán Supremo";
+                
+                // --- CAMBIO AQUÍ: LÓGICA DE FINALIZACIÓN ---
+                if(percent >= 100) {
+                    lvl = "Leyenda de la Cancha";
+                    document.getElementById('completionMessage').style.display = 'block';
+                    
+                    // Verificamos si ya mostramos la animación en esta sesión para no ser molestos
+                    if (!sessionStorage.getItem('finaleShown')) {
+                        this.triggerFinale();
+                        sessionStorage.setItem('finaleShown', 'true');
+                    }
+                }
+                document.getElementById('levelBadge').textContent = lvl;
+
+                // Actualizar Tarjetas
+                for(let i=0; i<=8; i++) {
+                    const card = document.getElementById(`card-${i}`);
+                    const status = document.getElementById(`status-${i}`);
+                    if(!card) continue;
+
+                    card.classList.remove('locked');
+                    if(this.state.completedModules.includes(i)) {
+                        status.className = 'status-indicator completed';
+                        status.innerHTML = '<i class="fas fa-check-circle"></i> Misión Cumplida';
+                    } else if(this.state.unlockedModules.includes(i)) {
+                        status.className = 'status-indicator active';
+                        status.innerHTML = '<i class="fas fa-play-circle"></i> En Curso';
+                    } else {
+                        card.classList.add('locked');
+                        status.className = 'status-indicator locked';
+                        status.innerHTML = '<i class="fas fa-lock"></i> Acceso Restringido';
+                    }
+                }
+
+                this.updateBadges();
+            },
+
+            updateBadges: function() {
+                // Definimos qué módulo completa cada medalla (index de la medalla : id del módulo)
+                // 0: Bronce (Módulo 2)
+                // 1: Plata (Módulo 3)
+                // 2: Oro (Módulo 4)
+                // 3: Esmeralda (Módulo 5)
+                // 4: Rubí (Módulo 6)
+                const badgeRequirements = {
+                    0: 2, 
+                    1: 3, 
+                    2: 4, 
+                    3: 5, 
+                    4: 6
+                };
+
+                // Recorremos las 5 medallas (0 a 4)
+                for (let i = 0; i < 5; i++) {
+                    const badgeElement = document.getElementById(`badge-${i}`);
+                    if (!badgeElement) continue;
+
+                    const requiredModule = badgeRequirements[i];
+                    
+                    // Verificamos si el ID del módulo requerido está en el array de completados
+                    if (this.state.completedModules.includes(requiredModule)) {
+                        badgeElement.classList.add('earned');
+                    } else {
+                        badgeElement.classList.remove('earned');
+                    }
+                }
+            },
+            
+            openModule: function(id) {
+                if(!this.state.unlockedModules.includes(id)) {
+                    return alert("⚠️ SISTEMA BLOQUEADO: Debes completar el módulo anterior para desbloquear esta zona.");
+                }
+                window.location.href = `modulo${id}.html`;
+            },
+
+          
+            // --- NUEVAS FUNCIONES PARA LA ANIMACIÓN FINAL ---
+            
+            triggerFinale: function() {
+                const overlay = document.getElementById('finaleOverlay');
+                overlay.style.display = 'flex'; // Mostrar overlay
+		// Forzamos al canvas a tomar el tamaño de la pantalla antes de empezar
+    const canvas = document.getElementById('fireworksCanvas');
+    if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+                this.startFireworks(); // Iniciar pirotecnia
+            },
+
+            closeFinale: function() {
+                const overlay = document.getElementById('finaleOverlay');
+                overlay.style.display = 'none';
+                // Detener la animación para ahorrar memoria
+                if (this.fireworksInterval) clearInterval(this.fireworksInterval);
+            },
+
+            startFireworks: function() {
+                const canvas = document.getElementById('fireworksCanvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                const particles = [];
+                
+                function Particle(x, y, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.color = color;
+                    this.velocity = {
+                        x: (Math.random() - 0.5) * 8,
+                        y: (Math.random() - 0.5) * 8
+                    };
+                    this.alpha = 1;
+                    this.friction = 0.96;
+                }
+
+                Particle.prototype.draw = function() {
+                    ctx.save();
+                    ctx.globalAlpha = this.alpha;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2, false);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    ctx.restore();
+                };
+
+                Particle.prototype.update = function() {
+                    this.velocity.x *= this.friction;
+                    this.velocity.y *= this.friction;
+                    this.x += this.velocity.x;
+                    this.y += this.velocity.y;
+                    this.alpha -= 0.01;
+                };
+
+                const colors = ['#FF6C00', '#39A900', '#00324D', '#FFD700', '#FF0055', '#00FFFF'];
+
+                function createFirework(x, y) {
+                    const particleCount = 80;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    for (let i = 0; i < particleCount; i++) {
+                        particles.push(new Particle(x, y, color));
+                    }
+                }
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // Efecto de rastro
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    particles.forEach((particle, index) => {
+                        if (particle.alpha > 0) {
+                            particle.update();
+                            particle.draw();
+                        } else {
+                            particles.splice(index, 1);
+                        }
+                    });
+                }
+
+                animate();
+
+                // Lanzar cohetes automáticamente
+                this.fireworksInterval = setInterval(() => {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * (canvas.height / 2); // Solo en la mitad superior
+                    createFirework(x, y);
+                }, 400); // Frecuencia de explosiones
+
+                // Redimensionar si cambia la ventana
+                window.addEventListener('resize', () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                });
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => app.init());
+	    </script>
+</body>
+</html>

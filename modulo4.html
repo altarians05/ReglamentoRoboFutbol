@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 4: Estructura y Desarrollo del Partido - RoboFútbol</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--sena-green:#39A900;--sena-blue:#00324D;--sena-orange:#FF6C00;--bg-body:#F4F6F9;--bg-card:#FFF;--text-gray:#59667a;--shadow:0 4px 20px rgba(0,0,0,.05);--radius:12px;--menu-width:290px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Roboto',sans-serif;background:var(--bg-body);color:var(--sena-blue);line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+header{background:var(--bg-card);padding:.8rem 2rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 10px rgba(0,0,0,.05);z-index:100;position:sticky;top:0}
+.header-left{display:flex;align-items:center;gap:20px}
+.back-btn{text-decoration:none;color:var(--sena-blue);font-weight:700;display:flex;align-items:center;gap:10px;transition:color .3s;font-size:.9rem}
+.back-btn:hover{color:var(--sena-orange)}
+.header-title{font-family:'Montserrat';text-transform:uppercase;font-weight:700;font-size:1rem;letter-spacing:1.7px;text-align:center;flex-grow:1}
+@media(max-width:768px){.header-title{display:none}}
+.main-layout{display:flex;flex:1;max-width:1400px;margin:2rem auto;gap:2rem;width:100%;padding:0 20px}
+.sidebar{width:var(--menu-width);background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;height:fit-content;position:sticky;top:6rem}
+.sidebar h3{font-family:'Montserrat';color:var(--sena-green);margin-bottom:1.5rem;border-bottom:2px solid #eee;padding-bottom:10px;font-size:1.1rem}
+.menu-item{display:flex;align-items:center;gap:12px;padding:10px 15px;margin-bottom:8px;border-radius:8px;cursor:pointer;transition:.3s;color:var(--text-gray);font-weight:500;position:relative;font-size:.9rem;border:1px solid transparent}
+.menu-item img{width:26px;height:26px;object-fit:contain;filter:grayscale(1);transition:.3s}
+.menu-item:hover{background:#f0fdf4;color:var(--sena-green);border-color:#d1fae5}
+.menu-item.active{background:var(--sena-green);color:#fff;box-shadow:0 4px 10px rgba(57,169,0,.3)}
+.menu-item.active img{filter:grayscale(0) brightness(1.5)}
+.menu-item.completed img{filter:grayscale(0)}
+.menu-item.completed::after{content:'\f00c';font-family:"Font Awesome 6 Free";font-weight:900;position:absolute;right:10px;color:var(--sena-green)}
+.menu-item.active.completed::after{color:#fff}
+.progress-sidebar{margin-top:20px;padding-top:15px;border-top:1px solid #eee}
+.progress-label{font-size:.8rem;font-weight:700;margin-bottom:8px;display:block}
+.progress-bg{background:#e0e0e0;height:10px;border-radius:10px;overflow:hidden}
+.progress-fill{background:linear-gradient(90deg,var(--sena-green),var(--sena-orange));height:100%;width:0;transition:width .6s ease}
+.content-area{flex:1;background:var(--bg-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2.5rem;min-height:600px;min-width:0}
+.activity-section{display:none;animation:fadeIn .5s ease}.activity-section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.section-header h2{font-family:'Montserrat';font-size:1.7rem;margin-bottom:1rem;border-left:5px solid var(--sena-orange);padding-left:1rem}
+.narrative-box{display:flex;gap:20px;background:#e3f2fd;padding:22px;border-radius:20px;border-left:6px solid var(--sena-blue);align-items:center;margin-bottom:22px}
+.narrative-avatar{width:90px;height:90px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.1);flex-shrink:0;animation:float 3s infinite ease-in-out}
+.btn-primary{background:var(--sena-orange);color:#fff;border:none;padding:12px 30px;border-radius:50px;cursor:pointer;font-weight:700;transition:.3s;display:inline-flex;align-items:center;gap:10px;font-size:1rem;box-shadow:0 4px 0 #c45200}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 0 #c45200}.btn-primary:active{transform:translateY(2px);box-shadow:0 2px 0 #c45200}
+.btn-blue{background:var(--sena-blue);box-shadow:0 4px 0 #001a2d}.btn-blue:hover{box-shadow:0 6px 0 #001a2d}
+.nav{text-align:right;margin-top:28px}
+.rb{border-left:5px solid;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:.95rem;color:var(--text-gray)}.rb b.l{display:block;font:700 .72rem Montserrat;text-transform:uppercase;margin-bottom:4px}
+.ro{background:#eef6fb;border-color:#00324D}.ro b.l{color:#00324D}.rm{background:#f0fdf4;border-color:#39A900}.rm b.l{color:#39A900}.re{background:#fff7ed;border-color:#FF6C00}.re b.l{color:#FF6C00}.rn{background:#fffbeb;border-color:#F4B223}.rn b.l{color:#b7791f}
+.sim{background:#f8fafc;border:2px solid #e2e8f0;border-radius:14px;padding:16px;margin-top:14px}
+.fld{width:100%;max-width:560px;display:block;margin:auto}
+.hs{cursor:pointer}.hs:hover{opacity:.8}
+.chk{padding:8px 12px;border-radius:8px;margin-top:8px;background:#fff;border:1px solid #e2e8f0;font-size:.92rem;animation:pop .4s both}.chk.ok{border-color:#39A900;background:#f0fdf4}.chk.bad{border-color:#e11d48;background:#fff1f2}
+.opt{display:block;width:100%;text-align:left;margin-top:8px;padding:10px 14px;border:2px solid #e2e8f0;border-radius:8px;background:#fff;cursor:pointer;font:inherit;transition:.2s}.opt:hover{border-color:var(--sena-green)}.opt.ok{background:#dcfce7;border-color:#39A900}.opt.no{background:#fee2e2;border-color:#e11d48}.opt.sel{background:#fff3e0;border-color:var(--sena-orange)}
+.qh{font:700 .75rem Montserrat;color:var(--sena-orange);text-transform:uppercase}
+.bar{display:flex;height:34px;border-radius:10px;overflow:hidden;position:relative;font:700 .75rem Montserrat;color:#fff}.bar div{display:flex;align-items:center;justify-content:center}
+.mk{position:absolute;top:-4px;width:4px;height:42px;background:#000;border-radius:3px;transition:left .05s linear}
+.digi{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin:14px 0}.digi div{background:var(--sena-blue);color:#fff;border-radius:10px;padding:8px 18px;text-align:center;font:700 1.6rem Montserrat}.digi small{display:block;font:500 .65rem Roboto;opacity:.8}
+.sb{display:flex;justify-content:center;align-items:center;gap:18px;font:700 2.2rem Montserrat;margin-bottom:8px}.sb span{background:#fff;border-radius:10px;padding:0 18px;border:3px solid}
+.evb{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin-top:10px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:768px){.cols{grid-template-columns:1fr}}
+.challenge-box{background:#fff3e0;border:2px dashed var(--sena-orange);border-radius:15px;padding:24px}
+.reflection-input{width:100%;padding:15px;border:2px solid #eee;border-radius:10px;margin-top:12px;font-family:inherit;min-height:90px}.reflection-input:focus{border-color:var(--sena-blue);outline:none}
+#congratsOverlay{position:fixed;inset:0;background:rgba(0,50,77,.95);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:2000;text-align:center;color:#fff;padding:20px}
+.badge-final{width:250px;animation:badgePop 1s cubic-bezier(.175,.885,.32,1.275);margin-bottom:20px;filter:drop-shadow(0 0 30px rgba(255,215,0,.6))}
+@keyframes badgePop{from{transform:scale(0) rotate(-180deg);opacity:0}to{transform:none;opacity:1}}
+@media(max-width:768px){.main-layout{flex-direction:column}.sidebar{width:100%;position:static}.narrative-box{flex-direction:column;text-align:center}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left"><img src="imagenes/Logos/sena.png" alt="SENA" style="height:50px"><a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Centro de Comando</a></div>
+  <div class="header-title">Módulo 4: Estructura y Desarrollo del Partido</div>
+  <img src="imagenes/Logos/tecnoacademia.jpeg" alt="TecnoAcademia" style="height:50px">
+</header>
+
+<div class="main-layout">
+<aside class="sidebar">
+  <h3><i class="fas fa-futbol"></i> Ruta del Partido</h3>
+  <div id="menu-1" class="menu-item active" onclick="showSection(1)"><img src="imagenes/Insignias/pin_steam/Pin_S.png" alt="S"> 1. Duración del Partido</div>
+  <div id="menu-2" class="menu-item" onclick="showSection(2)"><img src="imagenes/Insignias/pin_steam/Pin_T.png" alt="T"> 2. Antes de la Salida</div>
+  <div id="menu-3" class="menu-item" onclick="showSection(3)"><img src="imagenes/Insignias/pin_steam/Pin_E.png" alt="E"> 3. Señales del Juez</div>
+  <div id="menu-4" class="menu-item" onclick="showSection(4)"><img src="imagenes/Insignias/pin_steam/Pin_A.png" alt="A"> 4. Pausas y Reinicios</div>
+  <div id="menu-5" class="menu-item" onclick="showSection(5)"><img src="imagenes/Insignias/pin_steam/Pin_M.png" alt="M"> 5. Goles, Fuera y Trabados</div>
+  <div id="menu-6" class="menu-item" onclick="showSection(6)"><img src="imagenes/Insignias/pin_steam/Pin_S.png" alt="S"> 6. Descanso y Final</div>
+  <div id="menu-7" class="menu-item" onclick="showSection(7)" style="color:var(--sena-orange)"><img src="imagenes/Insignias/pin_steam/Pin_T.png" alt="T"> 7. Reto: Emparejamiento</div>
+  <div class="progress-sidebar"><span class="progress-label">Progreso del Módulo: <span id="progress-text">0%</span></span><div class="progress-bg"><div class="progress-fill" id="progress-bar"></div></div></div>
+</aside>
+
+<main class="content-area">
+
+<!-- 1 -->
+<section id="sec-1" class="activity-section active">
+  <div class="section-header"><h2>Art. 7.1. Duración del Partido</h2></div>
+  <div class="narrative-box"><img src="imagenes/Personajes/tecnoBot/para talleres_Mesa de trabajo 1.png" alt="TecnoBot" class="narrative-avatar"><div>"¡Maker! Un partido de RoboFútbol son <b>2 tiempos de 3 minutos</b> con un descanso en medio. Dale play al reloj y descubre por qué puede durar más de 8 minutos."</div></div>
+  <div class="sim">
+    <div class="bar"><div style="flex:3;background:var(--sena-green)">1.er TIEMPO · 3'</div><div style="flex:2;background:#F4B223;color:#333">DESCANSO · 2'</div><div style="flex:3;background:var(--sena-blue)">2.º TIEMPO · 3'</div><span class="mk" id="mk" style="left:0"></span></div>
+    <div class="digi"><div><small>Reloj de juego</small><span id="gc">0:00</span></div><div><small>Tiempo real</small><span id="rt">0:00</span></div></div>
+    <p id="ph" style="text-align:center;font-weight:700">Presiona ▶ para empezar</p>
+    <div style="text-align:center;margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-primary" onclick="ckGo()"><i class="fas fa-play"></i> Iniciar</button>
+      <button class="btn-primary btn-blue" onclick="ckPause()"><i class="fas fa-pause"></i> ¡Pausa! / ¡Ya!</button>
+      <button class="btn-primary btn-blue" onclick="ckReset()"><i class="fas fa-rotate-left"></i></button>
+    </div>
+    <div id="cmsg"></div>
+  </div>
+  <div class="rb ro"><b class="l">Regla oficial</b>2 tiempos de 3 minutos de juego, con un descanso de 2 minutos. Tiempo base: 3 + 2 + 3 = 8 minutos. El reloj se detiene en las pausas.</div>
+  <div class="rb rm"><b class="l">¿Qué significa?</b>Cada ¡Pausa! del juez congela el reloj de juego. Por eso el partido puede durar más de 8 minutos en la vida real.</div>
+  <div class="rb rn"><b class="l">Ten en cuenta</b>Solo el juez detiene y reinicia el reloj (Art. 7.4).</div>
+  <div class="nav"><button class="btn-primary" onclick="completeStep(1,2)">Siguiente Paso <i class="fas fa-arrow-right"></i></button></div>
+</section>
+
+<!-- 2 -->
+<section id="sec-2" class="activity-section">
+  <div class="section-header"><h2>Arts. 7.2 y 7.3. Antes de la Salida</h2></div>
+  <p style="color:var(--text-gray)">Toca un robot para sacarlo de su sitio y ponlo sobre la línea central. Luego prueba la salida del juez.</p>
+  <div class="sim">
+    <svg viewBox="0 0 220 150" class="fld"><rect width="220" height="150" fill="#4d9a3a" rx="6"/><line x1="110" y1="0" x2="110" y2="150" stroke="#fff" stroke-width="3"/><circle cx="110" cy="75" r="16" fill="none" stroke="#fff" stroke-width="2"/><rect x="0" y="50" width="6" height="50" fill="#fde047"/><rect x="214" y="50" width="6" height="50" fill="#fde047"/><circle cx="110" cy="75" r="5" fill="#FF8A00" stroke="#fff"/><g id="rbs"></g></svg>
+    <div style="text-align:center;margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn-primary" onclick="ya()"><i class="fas fa-bullhorn"></i> «¡Listos… ya!»</button><button class="btn-primary btn-blue" onclick="coin()">🪙 Lanzar moneda</button></div>
+    <div id="sres"></div><div id="coin" class="chk" style="display:none"></div>
+  </div>
+  <div class="rb ro"><b class="l">Regla oficial</b>Antes: el juez lanza una moneda y el ganador elige su mitad inicial; no hay saque. Salida: el balón está en el punto central y los 4 robots, en su propia mitad, sin tocar la línea central ni el balón. Nadie se mueve antes de la señal.</div>
+  <div class="rb rm"><b class="l">¿Qué significa?</b>Todos arrancan en igualdad de condiciones: la señal del juez vale para los dos equipos al mismo tiempo.</div>
+  <div class="rb re"><b class="l">Ejemplo</b>Si un robot se mueve antes del «ya», el juez repite la salida. Si le pasa otra vez al mismo equipo, el rival recibe un tiro libre (Art. 9.7).</div>
+  <div class="nav"><button class="btn-primary" onclick="completeStep(2,3)">Comprendido, avanzar <i class="fas fa-arrow-right"></i></button></div>
+</section>
+
+<!-- 3 -->
+<section id="sec-3" class="activity-section">
+  <div class="section-header"><h2>Art. 7.4. Señales del Juez</h2></div>
+  <div class="cols">
+    <div class="chk" style="border-left:5px solid var(--sena-green)"><b>📣 ¡Ya!</b><br>Empieza o se reanuda el juego. Los robots se mueven.</div>
+    <div class="chk" style="border-left:5px solid #e11d48"><b>✋ ¡Pausa!</b><br>Se detiene el reloj. Los pilotos sueltan los controles y los robots se detienen.</div>
+    <div class="chk" style="border-left:5px solid var(--sena-orange)"><b>📍 ¡Posiciones!</b><br>20 s para ubicar los robots con el control, sin tocarlos.</div>
+    <div class="chk" style="border-left:5px solid var(--sena-blue)"><b>🏁 ¡Fin!</b><br>Termina el tiempo.</div>
+  </div>
+  <div class="rb rn"><b class="l">Ten en cuenta</b>Solo el juez detiene y reinicia el reloj. El capitán puede avisar «¡Falla!» o «¡Peligro!», y el juez decide.</div>
+  <div class="sim"><h4>🎮 Reacciona a la señal</h4><div id="q3"></div></div>
+  <div class="nav"><button class="btn-primary" onclick="completeStep(3,4)">Entendido <i class="fas fa-arrow-right"></i></button></div>
+</section>
+
+<!-- 4 -->
+<section id="sec-4" class="activity-section">
+  <div class="section-header"><h2>Art. 7.5. Pausas y Reinicios</h2></div>
+  <p style="color:var(--text-gray)">Cuando el juez detiene el reloj, cada situación tiene su reinicio. ¿Los recuerdas?</p>
+  <div class="rb ro"><b class="l">Regla oficial (resumen)</b>Gol → balón al punto central, robots a su mitad. Balón fuera, robots trabados o penalti sin gol → balón al punto neutral más cercano, ningún robot a menos de 10 cm. Falta leve → tiro libre indirecto. Falta grave → tiro penalti. Robot inmovilizado o retirado → el juego sigue donde estaba.</div>
+  <div class="sim"><h4>🎮 ¿Cómo se reinicia?</h4><div id="q4"></div></div>
+  <div class="rb rn"><b class="l">Ten en cuenta</b>Siempre se reanuda con el «¡Ya!» del juez, después de «¡Posiciones!» cuando se necesita reubicar robots.</div>
+  <div class="nav"><button class="btn-primary" onclick="completeStep(4,5)">Avanzar <i class="fas fa-arrow-right"></i></button></div>
+</section>
+
+<!-- 5 -->
+<section id="sec-5" class="activity-section">
+  <div class="section-header"><h2>Arts. 7.6 a 7.8. Goles, Balón Fuera y Trabados</h2></div>
+  <p style="color:var(--text-gray)">Tú eres el juez: elige una jugada y mira qué pasa en el marcador.</p>
+  <div class="sim">
+    <div class="sb"><span style="border-color:#1e63d6;color:#1e63d6" id="sa">0</span>–<span style="border-color:var(--sena-orange);color:var(--sena-orange)" id="sb">0</span></div>
+    <svg viewBox="0 0 220 150" class="fld"><rect width="220" height="150" fill="#4d9a3a" rx="6"/><line x1="110" y1="0" x2="110" y2="150" stroke="#fff" stroke-width="2"/><rect x="0" y="50" width="6" height="50" fill="#fde047"/><rect x="214" y="50" width="6" height="50" fill="#fde047"/><circle id="bl" cx="110" cy="75" r="7" fill="#fff" stroke="#FF8A00" stroke-width="2" style="transition:transform .6s"/></svg>
+    <div class="evb" id="evb"></div>
+    <div class="evb"><button class="opt" onclick="trab()">🤖🤖 Dos robots trabados…</button></div>
+    <div id="evr"></div>
+  </div>
+  <div class="rb ro"><b class="l">Regla oficial</b>Hay gol cuando el balón cruza por completo la línea del arco, sin importar qué robot lo empujó. Balón fuera: pausa y el balón va al punto neutral más cercano. Trabados o balón atrapado 5 s: pausa, se separan los robots y se reinicia como balón fuera.</div>
+  <div class="rb rn"><b class="l">Ten en cuenta</b>Si un solo equipo tiene el balón encerrado, es retención (falta L3), no un simple trabado.</div>
+  <div class="nav"><button class="btn-primary" onclick="completeStep(5,6)">Avanzar <i class="fas fa-arrow-right"></i></button></div>
+</section>
+
+<!-- 6 -->
+<section id="sec-6" class="activity-section">
+  <div class="section-header"><h2>Arts. 7.9 y 7.10. Descanso y Final del Partido</h2></div>
+  <div class="cols">
+    <div class="rb ro" style="margin:0"><b class="l">Descanso (2 min)</b>Reloj de juego detenido. Cambian de mitad; los pilotos mantienen su zona. Pueden reparar, cambiar baterías, revisar el robot y hablar con su docente.</div>
+    <div class="rb ro" style="margin:0"><b class="l">Final</b>El partido termina con «¡Fin!» al acabar el segundo tiempo. Un gol cuenta solo si el balón cruzó la línea antes de la señal.</div>
+  </div>
+  <div class="sim"><h4>🎮 ¿Verdadero o realista?</h4><div id="q6"></div></div>
+  <div class="challenge-box" style="margin-top:18px">
+    <h4><i class="fas fa-brain"></i> Reflexión de equipo</h4>
+    <p>¿Por qué crees que solo el juez puede detener y reiniciar el reloj? ¿Cómo ayuda eso al juego limpio?</p>
+    <textarea class="reflection-input" id="reflexion2" placeholder="Escribe tu análisis aquí..."></textarea>
+    <div class="nav"><button class="btn-primary" onclick="saveReflection(2)"><i class="fas fa-save"></i> Guardar y Jugar</button></div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section id="sec-7" class="activity-section">
+  <div class="section-header"><h2>Reto Final: Une la Señal con su Efecto</h2></div>
+  <div style="background:#f8f9fa;padding:15px;border-radius:10px;margin-bottom:16px;border-left:4px solid var(--sena-green)">Toca un elemento de la izquierda y su pareja de la derecha. Parejas: <b><span id="mc">0</span>/6</b></div>
+  <div class="cols"><div id="mL"></div><div id="mR"></div></div>
+  <div id="finalBtnArea" style="text-align:center;margin-top:30px;display:none;animation:fadeIn .8s ease">
+    <div style="background:#e8f5e9;padding:20px;border-radius:15px;border:2px solid var(--sena-green);margin-bottom:20px"><h3 style="color:var(--sena-green);margin-bottom:10px"><i class="fas fa-check-circle"></i> ¡Golazo, Maker!</h3><p>Dominas cómo se juega, se detiene y se reanuda un partido de RoboFútbol.</p></div>
+    <button class="btn-primary" onclick="finishModule()" style="padding:15px 40px;font-size:1.1rem"><i class="fas fa-medal"></i> FINALIZAR Y RECLAMAR INSIGNIA</button>
+  </div>
+</section>
+
+</main>
+</div>
+
+<div id="congratsOverlay">
+  <h1 style="font-family:'Montserrat';font-size:3rem;margin-bottom:20px;text-transform:uppercase;color:#FFD700">¡FELICITACIONES!</h1>
+  <img src="imagenes/Insignias/insignias-mohs/02-insignias-mohs-oro.png" alt="Insignia Oro" class="badge-final">
+  <h2 style="font-family:'Montserrat'">Insignia Oro (Goleador) Desbloqueada</h2>
+  <p style="font-size:1.2rem;max-width:600px">Conoces cómo se juega un partido de RoboFútbol de principio a fin. ¡Listo para salir a la cancha!</p>
+  <button onclick="window.location.href='index.html'" style="margin-top:30px;background:#fff;color:var(--sena-blue);padding:15px 40px;border-radius:50px;font-weight:700;cursor:pointer;border:none;font-size:1.1rem"><i class="fas fa-home"></i> Volver al Centro de Comando</button>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+// ===== PROGRESO Y MENÚ =====
+const totalSteps=7;const visitedSteps=new Set([1]);
+function completeStep(c,n){visitedSteps.add(n);updateProgress();$('menu-'+c).classList.add('completed');showSection(n)}
+function showSection(id){document.querySelectorAll('.activity-section').forEach(s=>s.classList.remove('active'));$('sec-'+id).classList.add('active');document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));$('menu-'+id).classList.add('active');window.scrollTo(0,0);visitedSteps.add(id);updateProgress()}
+function updateProgress(){const p=Math.round(visitedSteps.size/totalSteps*100);$('progress-bar').style.width=p+'%';$('progress-text').textContent=p+'%'}
+function saveReflection(id){const t=$('reflexion'+id).value;if(t.length>10){alert("¡Respuesta registrada con éxito!");if(id===2)completeStep(6,7)}else alert("Por favor, escribe una respuesta más completa.")}
+// ===== 1. RELOJ =====
+let gc=0,rt=0,pz=0,br=0,iv=null;
+const fm=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+function ckDraw(){const pos=gc+(gc>=180?120-br:0);$('mk').style.left='calc('+(pos/480*100)+'% - 2px)';$('gc').textContent=fm(gc);$('rt').textContent=fm(rt);$('ph').textContent=br>0?'☕ Descanso: reloj de juego detenido':pz?'✋ ¡Pausa! El reloj de juego está detenido':gc<180?'⚽ 1.er tiempo':gc<360?'⚽ 2.º tiempo':'🏁 ¡Fin!'}
+function tick(){rt++;if(br>0)br--;else if(!pz){gc++;if(gc===180)br=120}if(gc>=360){clearInterval(iv);iv=null;$('cmsg').innerHTML='<div class="chk ok">🏁 Juego efectivo: <b>6:00</b>. Duración total: <b>'+fm(rt)+'</b>'+(pz||rt>480?' (más de 8 min por las pausas).':'.')+'</div>'}ckDraw()}
+function ckGo(){if(!iv&&gc<360)iv=setInterval(tick,30)}
+function ckPause(){pz=!pz;ckDraw()}
+function ckReset(){clearInterval(iv);iv=null;gc=rt=br=pz=0;$('cmsg').innerHTML='';ckDraw()}
+// ===== 2. SALIDA =====
+const RB=[[60,45,'#1e63d6','A1'],[60,105,'#1e63d6','A2'],[160,45,'#FF6C00','B1'],[160,105,'#FF6C00','B2']];let go=0;
+function drawRB(){$('rbs').innerHTML=RB.map((r,i)=>{const d=r[0]<110?1:-1,x=go?d*35:r[4]?d*50:0;return '<g class="hs" onclick="tg('+i+')" style="transform:translateX('+x+'px);transition:.6s"><rect x="'+(r[0]-9)+'" y="'+(r[1]-9)+'" width="18" height="18" rx="4" fill="'+r[2]+'" stroke="#fff" stroke-width="2"/><text x="'+r[0]+'" y="'+(r[1]+3)+'" font-size="7" fill="#fff" text-anchor="middle">'+r[3]+'</text></g>'}).join('')}
+function tg(i){RB[i][4]=!RB[i][4];go=0;drawRB();$('sres').innerHTML=''}
+function ya(){go=0;if(RB.some(r=>r[4])){drawRB();$('sres').innerHTML='<div class="chk bad">❌ <b>¡Salida repetida!</b> Un robot tocaba la línea central. Si le pasa otra vez al mismo equipo: tiro libre para el rival.</div>'}else{go=1;drawRB();$('sres').innerHTML='<div class="chk ok">✅ <b>¡Salida válida!</b> Los 4 robots estaban en su mitad. Arranca el reloj.</div>'}}
+function coin(){const a=Math.random()<.5,c=$('coin');c.style.display='block';c.innerHTML='🪙 Gana el equipo <b>'+(a?'azul':'naranja')+'</b>: elige su mitad inicial.'}
+// ===== 5. GOLES =====
+let A=0,B=0,tv;
+const EV=[['🔵 empuja el balón al arco naranja',1,0,'translate(98px,0)','¡Gol! El balón cruzó por completo la línea. Reinicio: balón al punto central.'],['🔵 mete el balón en su propio arco',0,1,'translate(-98px,0)','Gol en propia puerta: cuenta para el rival.'],['🟠 anota sin querer (gol accidental)',0,1,'translate(-98px,0)','El gol accidental también cuenta.'],['El juez pita falta antes de que el balón cruce la línea',0,0,'translate(60px,10px)','No hay gol: se aplica la sanción de la falta.'],['El balón sale por encima de una pared',0,0,'translate(20px,-95px)','Balón fuera: pausa, balón al punto neutral más cercano, ¡Posiciones! (nadie a menos de 10 cm) y ¡Ya!']];
+$('evb').innerHTML=EV.map((e,i)=>'<button class="opt" onclick="ev('+i+')">'+e[0]+'</button>').join('');
+function ev(i){const e=EV[i];A+=e[1];B+=e[2];$('sa').textContent=A;$('sb').textContent=B;$('bl').style.transform=e[3];$('evr').innerHTML='<div class="rb rm"><b class="l">Decisión del juez</b>'+e[4]+'</div>';setTimeout(()=>$('bl').style.transform='',1400)}
+function trab(){let n=5;clearInterval(tv);$('evr').innerHTML='<div class="chk">⏱ El juez cuenta en voz alta: <b>'+n+'</b></div>';tv=setInterval(()=>{n--;if(n>0)$('evr').innerHTML='<div class="chk">⏱ El juez cuenta en voz alta: <b>'+n+'</b></div>';else{clearInterval(tv);$('evr').innerHTML='<div class="rb rm"><b class="l">¡Pausa!</b>El juez separa los robots y reinicia como un balón fuera. Nadie recibe falta.</div>'}},1000)}
+// ===== MINI-QUIZ =====
+function qz(id,Q){const e=$(id);let i=0,s=0;(function r(){if(i>=Q.length){e.innerHTML='<div class="chk ok"><b>🏆 '+s+'/'+Q.length+'</b> '+(s==Q.length?'¡Perfecto!':'¡Buen trabajo! Repasa el artículo y reintenta.')+'</div><button class="opt" id="rs'+id+'">↺ Reintentar</button>';$('rs'+id).onclick=()=>{i=0;s=0;r()};return}
+const q=Q[i];e.innerHTML='<div class="qh">Pregunta '+(i+1)+'/'+Q.length+' · ★ '+s+'</div><p><b>'+q[0]+'</b></p>'+q[1].map(t=>'<button class="opt">'+t+'</button>').join('')+'<div id="fb'+id+'"></div>';
+e.querySelectorAll('.opt').forEach((b,k)=>b.onclick=()=>{const ok=k==q[2];b.classList.add(ok?'ok':'no');if(ok)s++;e.querySelectorAll('.opt').forEach(x=>x.onclick=null);$('fb'+id).innerHTML='<div class="rb '+(ok?'rm':'re')+'"><b class="l">'+(ok?'¡Correcto!':'Ten en cuenta')+'</b>'+q[3]+'</div><button class="opt" style="text-align:center;font-weight:700">Siguiente →</button>';e.querySelector('#fb'+id+' .opt').onclick=()=>{i++;r()}})})()}
+qz('q3',[['El juez dice «¡Pausa!». ¿Qué hacen los pilotos?',['Sueltan los controles y los robots se detienen','Siguen jugando hasta el gol','Mueven los robots con la mano'],0,'Con «¡Pausa!» se detiene el reloj y todo el juego.'],['Escuchas «¡Posiciones!». ¿Qué tienes?',['5 s para salir corriendo','20 s para ubicar tus robots con el control, sin tocarlos','2 min para repararlo'],1,'Los robots se ubican con el control, nunca con las manos.'],['Tu capitán grita «¡Peligro!». ¿Quién decide?',['El capitán','El docente','El juez'],2,'El capitán avisa; el juez decide.'],['¿Quién detiene y reinicia el reloj?',['Cualquier piloto','Solo el juez','El equipo que va ganando'],1,'Solo el juez maneja el reloj.']]);
+qz('q4',[['Se marca un gol. ¿Cómo se reinicia?',['Balón al punto central; los robots vuelven a su mitad','Tiro penalti','El juego sigue donde estaba'],0,'Después de «¡Posiciones!» llega el «¡Ya!».'],['El balón sale por encima de una pared.',['Balón al punto neutral más cercano; nadie a menos de 10 cm','Balón al punto central','Tiro libre directo'],0,'Se reinicia desde el punto neutral más cercano al lugar de salida.'],['Un robot queda inmovilizado y sale de la cancha.',['Se reinicia con ¡Posiciones!','El juego sigue donde estaba','Gol para el rival'],1,'El equipo sigue con su otro robot.'],['Se pita una falta leve.',['Tiro libre indirecto para el rival','Tarjeta roja','Tiro penalti'],0,'La falta grave sí lleva tiro penalti.'],['Penalti que no termina en gol.',['Se reinicia como después de un gol','Se reinicia como un balón fuera','Se repite el penalti'],1,'Si hay gol, se reinicia como tras un gol.']]);
+qz('q6',[['¿Cuánto dura el descanso y qué pasa con el reloj de juego?',['2 minutos, con el reloj detenido','5 minutos, con el reloj corriendo','Lo decide cada equipo'],0,'Art. 7.9.'],['En el descanso, ¿qué pueden hacer los equipos?',['Cambiar de robot por uno nuevo','Reparar, cambiar baterías y hablar con su docente','Nada: no pueden tocar el robot'],1,'Solo juegan los dos robots verificados; no se cambia de robot.'],['Cambian de mitad. ¿Y los pilotos?',['Cambian de zona','Mantienen su zona','Entran a la cancha'],1,'Los pilotos mantienen su zona.'],['Un robot no está listo a los 2 minutos.',['Se espera hasta que lo esté','El 2.º tiempo empieza con el robot que tengan','El partido se cancela'],1,'El otro robot entra después, según el Art. 10.1.'],['El balón cruza la línea después del «¡Fin!».',['Cuenta como gol','No cuenta','Se repite el partido'],1,'Un gol cuenta solo si el balón cruzó la línea antes de la señal.']]);
+// ===== 7. EMPAREJAMIENTO =====
+const MP=[['¡Ya!','Empieza o se reanuda el juego'],['¡Pausa!','Se detiene el reloj y los robots se detienen'],['¡Posiciones!','20 s para ubicar los robots, sin tocarlos'],['¡Fin!','Termina el tiempo del partido'],['Balón fuera','Balón al punto neutral más cercano'],['Gol','Balón al punto central']];let ms=null,md=0;
+function mInit(){const L=$('mL'),R=$('mR');L.innerHTML=R.innerHTML='';MP.forEach((p,i)=>{const b=document.createElement('button');b.className='opt';b.textContent=p[0];b.dataset.i=i;b.onclick=()=>pick(b,'L');L.appendChild(b)});[...MP.keys()].sort(()=>Math.random()-.5).forEach(i=>{const b=document.createElement('button');b.className='opt';b.textContent=MP[i][1];b.dataset.i=i;b.onclick=()=>pick(b,'R');R.appendChild(b)})}
+function pick(b,side){if(b.classList.contains('ok'))return;if(!ms||ms.side==side){if(ms)ms.b.classList.remove('sel');ms={b,side};b.classList.add('sel');return}
+if(ms.b.dataset.i==b.dataset.i){[ms.b,b].forEach(x=>{x.classList.remove('sel');x.classList.add('ok')});ms=null;$('mc').textContent=++md;if(md==MP.length){$('finalBtnArea').style.display='block';visitedSteps.add(7);updateProgress()}}else{const a=ms.b;a.classList.remove('sel');a.classList.add('no');b.classList.add('no');setTimeout(()=>{a.classList.remove('no');b.classList.remove('no')},600);ms=null}}
+// ===== FINALIZAR MÓDULO =====
+function finishModule(){const storageKey='makerCourseState',saved=sessionStorage.getItem(storageKey),cur=4,next=5;
+if(saved){const state=JSON.parse(saved);if(!state.completedModules.includes(cur))state.completedModules.push(cur);if(!state.unlockedModules.includes(next))state.unlockedModules.push(next);sessionStorage.setItem(storageKey,JSON.stringify(state));$('congratsOverlay').style.display='flex'}else{alert("Error de sesión. Volviendo al inicio.");window.location.href='index.html'}}
+drawRB();mInit();updateProgress();ckDraw();
+</script>
+</body>
+</html>

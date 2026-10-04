@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 3: Sistema de Competencia y Sorteos - RoboFútbol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Paleta Institucional */
+            --sena-green: #39A900; 
+            --sena-blue: #00324D; 
+            --sena-orange: #FF6C00;
+            --bg-body: #F4F6F9; 
+            --bg-card: #FFFFFF; 
+            --text-gray: #59667a;
+            --shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-body); color: var(--sena-blue); line-height: 1.6; }
+        
+        /* HEADER */
+        header { background-color: var(--bg-card); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .back-btn { text-decoration: none; color: var(--sena-blue); font-weight: bold; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        .back-btn:hover { color: var(--sena-orange); }
+        
+        /* Título del Módulo Centrado */
+        .module-title { 
+            font-family: 'Montserrat', sans-serif; 
+            text-transform: uppercase; 
+            font-weight: 700; 
+            color: var(--sena-blue); 
+            font-size: 1.2rem; 
+            text-align: center; 
+            flex-grow: 1; 
+            letter-spacing: 1.7px; /* Requerimiento específico */
+        }
+        @media(max-width: 768px) { .module-title { display: none; } }
+
+        /* CONTENIDO */
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 20px; }
+        
+        /* BANNER */
+        .banner-container { width: 100%; margin-bottom: 2rem; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); background: white; text-align: center; }
+        .banner-container img { width: 100%; max-height: 300px; object-fit: cover; }
+        
+        /* CARDS GENERALES */
+        .info-card { background: var(--bg-card); border-radius: var(--radius); padding: 3rem; box-shadow: var(--shadow); border-top: 5px solid var(--sena-green); margin-bottom: 2rem; }
+        .section-title { font-family: 'Montserrat'; color: var(--sena-green); font-size: 1.4rem; margin-bottom: 1.5rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        /* SECCIÓN 1: PRESENTACIÓN */
+        .presentation-content { display: grid; grid-template-columns: 1fr 220px; gap: 30px; align-items: center; }
+        .tecnobot-img { width: 130%; animation: float 3s ease-in-out infinite; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1)); }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        
+        .meta-list { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .meta-list li { background: #f8f9fa; padding: 12px 15px; border-radius: 8px; border-left: 4px solid var(--sena-orange); font-size: 0.9rem; }
+        .meta-list li strong { color: var(--sena-blue); display: block; margin-bottom: 4px; font-family: 'Montserrat'; }
+
+        /* SECCIÓN NARRATIVA (Estilo Chat) */
+        .narrative-block { display: flex; gap: 20px; margin-bottom: 30px; align-items: flex-start; }
+        .narrative-block.reverse { flex-direction: row-reverse; text-align: right; }
+        .character-avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 4px solid var(--sena-green); flex-shrink: 0; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .dialogue-box { background: #e3f2fd; padding: 25px; border-radius: 0 20px 20px 20px; position: relative; font-size: 1rem; color: #333; flex-grow: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .narrative-block.reverse .dialogue-box { background: #fff3e0; border-radius: 20px 0 20px 20px; }
+        
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 15px; margin: 20px 0; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* PREGUNTAS REFLEXIVAS */
+        .question-box { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 15px; overflow: hidden; transition: all 0.3s; }
+        .question-box:hover { border-color: var(--sena-blue); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .q-header { padding: 15px 20px; background: #f8f9fa; cursor: pointer; font-weight: bold; color: var(--sena-blue); display: flex; justify-content: space-between; align-items: center; }
+        .q-content { padding: 20px; display: none; color: var(--text-gray); border-top: 1px solid #eee; background: #fff; }
+        
+        /* ODS CARDS */
+        .ods-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .ods-card { position: relative; overflow: hidden; border-radius: 15px; cursor: pointer; transition: transform 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .ods-card:hover { transform: translateY(-5px); }
+        .ods-card img { width: 100%; height: auto; display: block; }
+        .ods-info { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0, 50, 77, 0.9); color: white; padding: 15px; transform: translateY(100%); transition: transform 0.3s; font-size: 0.85rem; }
+        .ods-card:hover .ods-info { transform: translateY(0); }
+
+        /* JUEGO MATCH (Emparejamiento) */
+        .game-container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; }
+        .column { display: flex; flex-direction: column; gap: 15px; }
+        .match-item { padding: 15px; background: white; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; transition: all 0.2s; text-align: center; font-weight: bold; color: var(--text-gray); }
+        .match-item:hover { border-color: var(--sena-orange); background: #fff3e0; }
+        .match-item.selected { background: var(--sena-blue); color: white; border-color: var(--sena-blue); }
+        .match-item.matched { background: var(--sena-green); color: white; border-color: var(--sena-green); cursor: default; opacity: 0.7; }
+
+        /* BOTÓN FINAL */
+        .final-action { text-align: center; margin-top: 40px; display: none; /* Se muestra al ganar */ }
+        .btn-finish { background: var(--sena-green); color: white; border: none; padding: 15px 50px; font-size: 1.2rem; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(57, 169, 0, 0.3); transition: transform 0.2s; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-finish:hover { transform: scale(1.05); background: #2e8b00; }
+
+        /* OVERLAY DE INSIGNIA (Animación Final) */
+        #badgeOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,50,77,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; text-align: center; color: white; }
+        .badge-anim { width: 300px; animation: badgePop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin-bottom: 20px; filter: drop-shadow(0 0 30px rgba(255,215,0,0.5)); }
+        @keyframes badgePop { from { transform: scale(0) rotate(-180deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+        .congrats-text { font-family: 'Montserrat'; font-size: 3rem; margin-bottom: 10px; text-transform: uppercase; color: #FFD700; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .btn-return { background: white; color: var(--sena-blue); padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: bold; transition: 0.3s; margin-top: 30px; display: inline-block; cursor: pointer; border: none; font-size: 1.1rem; }
+        .btn-return:hover { background: var(--sena-orange); color: white; transform: translateY(-3px); }
+
+        @media (max-width: 768px) {
+            .presentation-content { grid-template-columns: 1fr; text-align: center; }
+            .tecnobot-img { max-width: 180px; margin: 0 auto; }
+            .meta-list { grid-template-columns: 1fr; }
+            .narrative-block, .narrative-block.reverse { flex-direction: column; align-items: center; text-align: center; }
+            .dialogue-box { border-radius: 20px; }
+            .game-container { grid-template-columns: 1fr; }
+        }
+
+/* --- NUEVOS ESTILOS CAPÍTULO 6 --- */
+        .format-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .format-card { background: #fff; border: 2px solid var(--sena-blue); border-radius: 15px; padding: 25px; text-align: center; transition: transform 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
+        .format-card:hover { transform: translateY(-5px); border-color: var(--sena-orange); }
+        .format-card i { font-size: 3rem; color: var(--sena-green); margin-bottom: 15px; }
+        .format-card h4 { color: var(--sena-blue); font-family: 'Montserrat'; margin-bottom: 10px; font-size: 1.2rem; }
+        
+        .score-container { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px; margin: 25px 0; }
+        .score-box { background: #fff; padding: 20px; border-radius: 12px; text-align: center; border-bottom: 5px solid; width: 30%; min-width: 220px; box-shadow: var(--shadow); transition: transform 0.2s; }
+        .score-box:hover { transform: scale(1.05); }
+        .score-box.win { border-color: var(--sena-green); }
+        .score-box.loss { border-color: #dc3545; }
+        .score-box.walkover { border-color: var(--sena-orange); }
+        .score-number { font-size: 2.5rem; font-weight: bold; font-family: 'Montserrat'; display: block; margin: 10px 0; }
+        .score-box.win .score-number { color: var(--sena-green); }
+        .score-box.loss .score-number { color: #dc3545; }
+        .score-box.walkover .score-number { color: var(--sena-orange); }
+        
+        .bracket-container { background: #fff; padding: 20px; border-radius: var(--radius); border-left: 5px solid var(--sena-blue); box-shadow: var(--shadow); margin-top: 20px; }
+        .bracket-step { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #eee; }
+        .bracket-step:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .bracket-icon { background: var(--bg-body); width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: var(--sena-orange); font-size: 1.5rem; flex-shrink: 0; font-weight: bold; }
+        .bracket-content strong { color: var(--sena-blue); font-family: 'Montserrat'; display: block; margin-bottom: 5px; font-size: 1.1rem; }
+
+.rb{border-left:5px solid;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:.95rem;color:var(--text-gray)}.rb b.l{display:block;font:700 .72rem Montserrat;text-transform:uppercase;margin-bottom:4px}
+.ro{background:#eef6fb;border-color:#00324D}.ro b.l{color:#00324D}.rm{background:#f0fdf4;border-color:#39A900}.rm b.l{color:#39A900}.re{background:#fff7ed;border-color:#FF6C00}.re b.l{color:#FF6C00}.rn{background:#fffbeb;border-color:#F4B223}.rn b.l{color:#b7791f}
+.tabs{display:flex;gap:10px;justify-content:center;margin:16px 0}.tab{padding:10px 20px;border-radius:30px;border:2px solid var(--sena-blue);background:#fff;font:700 .85rem Montserrat;cursor:pointer;color:var(--sena-blue)}.tab.on{background:var(--sena-blue);color:#fff}
+.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin:14px 0}.node{background:#fff;border:3px solid var(--sena-green);border-radius:14px;padding:12px 16px;font-weight:700;text-align:center;animation:pop .5s both}.node:nth-child(3){animation-delay:.2s}.node:nth-child(5){animation-delay:.4s}.flow>i{color:#aaa;font-size:1.4rem}@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.groups{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}.grp{background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:10px;min-height:60px}.grp h5{color:var(--sena-blue)}.team{display:inline-block;margin:4px;padding:6px 12px;border-radius:20px;background:var(--sena-orange);color:#fff;font-weight:700;font-size:.85rem;animation:pop .4s both}
+.btn-g{background:var(--sena-orange);color:#fff;border:none;border-radius:30px;padding:10px 22px;font:700 .9rem Montserrat;cursor:pointer;box-shadow:0 4px 0 #c45200}.btn-g:active{transform:translateY(3px);box-shadow:none}
+.sc{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin:14px 0}.sc .t{text-align:center}.sc .g{font:700 2.6rem Montserrat;color:var(--sena-blue)}.sc button.s{width:36px;height:36px;border-radius:50%;border:none;background:var(--sena-blue);color:#fff;font-size:1.2rem;cursor:pointer}
+.pts{font:700 1.4rem Montserrat;margin-top:4px}
+.br{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:center;margin-top:14px}@media(max-width:768px){.br{grid-template-columns:1fr}}
+.m{background:#fff;border:2px solid #e2e8f0;border-radius:12px;padding:8px;margin:8px 0}.m small{display:block;color:var(--text-gray);font-weight:700;text-align:center}.slot{display:block;width:100%;margin:4px 0;padding:8px;border:2px solid #e2e8f0;border-radius:8px;background:#f8fafc;cursor:pointer;font-weight:700}.slot:hover{border-color:var(--sena-green)}.slot.w{background:#dcfce7;border-color:var(--sena-green)}.slot.l{opacity:.5}
+.pod{text-align:center;font:700 1.1rem Montserrat;margin-top:12px;min-height:30px}
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="imagenes/Logos/sena.png" alt="Logo SENA" style="height: 50px; width: auto;">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Centro de Comando</a>
+        </div>
+        <div class="module-title">Módulo 3: Sistema de Competencia y Sorteos</div>
+        <img src="imagenes/Logos/tecnoacademia.jpeg" alt="Logo Tecnoacademia" style="height: 50px; width: auto;">
+    </header>
+
+    <div class="container">
+        
+        <div class="banner-container">
+            <img src="imagenes/Fondos/Titulos_Mesa de trabajo 1 copia.png" alt="Banner RoboFútbol">
+        </div>
+
+        <div class="info-card"><div class="section-title"><i class="fas fa-sitemap"></i> Artículos 6.1 y 6.2. Formato del Torneo y Sorteos</div><div class="tabs"><button class="tab on" id="tA" onclick="fmt('A')">A. Formato mixto</button><button class="tab" id="tB" onclick="fmt('B')">B. Eliminación directa pura</button></div><div class="flow" id="flow"></div><p id="fmtTxt" style="text-align:center;color:var(--text-gray)"></p><div class="rb ro"><b class="l">Regla oficial</b><p><b>6.1</b> El Comité Organizador define el formato y lo comunica a los participantes antes de que empiece el evento. Lo decide según la cantidad de equipos con robots homologados y el tiempo disponible. Puede ser: A. Formato mixto (fase de grupos + eliminación directa), el recomendado porque asegura un mínimo de partidos por equipo; B. Eliminación directa pura, si hay muy poco tiempo o demasiados participantes. En la modalidad B no se aplican los Art. 6.3 a 6.5.</p><p style="margin-top:6px"><b>6.2</b> Los grupos y los emparejamientos de eliminación directa se definen por sorteo público o con un software de emparejamiento aleatorio. Así el proceso es transparente.</p></div><div class="sim" style="margin-top:14px"><h4><i class="fas fa-dice"></i> Simulador de sorteo público</h4><button class="btn-g" onclick="draw()">🎲 Sortear equipos</button><div class="groups"><div class="grp"><h5>Grupo A</h5><div id="gA"></div></div><div class="grp"><h5>Grupo B</h5><div id="gB"></div></div></div></div><div class="rb rm"><b class="l">¿Qué significa?</b><p>El Comité escoge el formato según cuántos equipos hay y cuánto tiempo queda. El sorteo se hace a la vista de todos (o con software) para que nadie dude.</p></div></div>
+        <div class="info-card"><div class="section-title"><i class="fas fa-chart-bar"></i> Artículo 6.3. Sistema de Puntuación (Fase de Grupos)</div><p>Sube o baja los goles y mira cuántos puntos de clasificación gana cada equipo.</p><div class="sc"><div class="t"><b>Equipo A</b><div class="g" id="gaN">0</div><button class="s" onclick="goal('a',-1)">−</button> <button class="s" onclick="goal('a',1)">+</button><div class="pts" id="pa"></div></div><div class="g">:</div><div class="t"><b>Equipo B</b><div class="g" id="gbN">0</div><button class="s" onclick="goal('b',-1)">−</button> <button class="s" onclick="goal('b',1)">+</button><div class="pts" id="pb"></div></div></div><div class="score-container"><div class="score-box win"><i class="fas fa-check-circle" style="color:var(--sena-green);font-size:2rem"></i><span class="score-number">3 PTS</span><strong>Partido ganado (más goles)</strong></div><div class="score-box walkover"><i class="fas fa-handshake" style="color:var(--sena-orange);font-size:2rem"></i><span class="score-number">1 PT</span><strong>Partido empatado (1 para cada equipo)</strong></div><div class="score-box loss"><i class="fas fa-times-circle" style="color:#dc3545;font-size:2rem"></i><span class="score-number">0 PTS</span><strong>Partido perdido</strong></div></div><div class="rb ro"><b class="l">Regla oficial</b><p>En la modalidad de grupos, la clasificación se define con puntos de clasificación: partido ganado (más goles) 3 puntos; partido empatado 1 punto para cada equipo; partido perdido 0 puntos. En la fase de grupos no hay tiempo extra: un empate vale 1 punto.</p></div><div class="rb re"><b class="l">Ejemplo</b><p>Tu equipo gana 2–1: suma 3 puntos. Si hubiera terminado 1–1, cada equipo sumaría 1 punto.</p></div></div>
+        <div class="info-card"><div class="section-title"><i class="fas fa-trophy"></i> Artículos 6.6 y 6.7. Eliminación Directa y Podio</div><p>Toca al equipo que crees que gana cada semifinal y luego la Gran Final.</p><div class="br"><div><div class="m"><small>Semifinal 1</small><button class="slot" id="s1a" onclick="pick(1,'a')">1.º Grupo A</button><button class="slot" id="s1b" onclick="pick(1,'b')">2.º Grupo B</button></div><div class="m"><small>Semifinal 2</small><button class="slot" id="s2a" onclick="pick(2,'a')">1.º Grupo B</button><button class="slot" id="s2b" onclick="pick(2,'b')">2.º Grupo A</button></div></div><div><div class="m"><small>🥇 Gran Final</small><button class="slot" id="fa" onclick="fin('a')">—</button><button class="slot" id="fb" onclick="fin('b')">—</button></div><div class="m"><small>🥉 Tercer puesto</small><div class="slot" id="ta" style="cursor:default">—</div><div class="slot" id="tb" style="cursor:default">—</div></div></div><div class="pod" id="pod"></div></div><div style="text-align:center"><button class="btn-g" onclick="resetBr()">↺ Reiniciar</button></div><div class="rb ro"><b class="l">Regla oficial</b><p><b>6.6</b> Las llaves cruzan a los clasificados según su posición (ejemplo: 1.º del Grupo A contra 2.º del Grupo B). Quien gana el partido avanza a la siguiente ronda (octavos, cuartos, semifinal, final); quien pierde queda eliminado.</p><p style="margin-top:6px"><b>6.7</b> Tercer puesto: los dos perdedores de las semifinales juegan un partido adicional. Campeón: los ganadores de las semifinales juegan la Gran Final; el ganador es el Campeón del torneo y el perdedor es el Subcampeón.</p></div><div class="rb rn"><b class="l">Ten en cuenta</b><p>Si hay empate al terminar un partido de eliminación directa, se aplica el Art. 6.8 (lo verás en el módulo de desempates).</p></div></div>
+        
+        <div class="info-card">
+            <div class="section-title"><i class="fas fa-gamepad"></i> Reto de Conexión: Sistema de Competencia</div>
+            <p>Selecciona un concepto de la columna izquierda y conéctalo con su definición en la derecha. ¡Completa los 4 pares para aprobar el capítulo!</p>
+
+            <div class="game-container" id="matchGame">
+                </div>
+
+            <div class="final-action" id="finalBtnArea">
+                <h3 style="color: var(--sena-green); margin-bottom: 10px;">¡Excelente Conexión!</h3>
+                <p style="margin-bottom: 20px;">Has comprendido el sistema de competencia de RoboFútbol.</p>
+                <button class="btn-finish" onclick="finishModule()">
+                    <i class="fas fa-star"></i> Finalizar Capítulo y Guardar
+                </button>
+            </div>
+        </div>
+
+
+    </div>
+    <div id="badgeOverlay">
+        <h1 class="congrats-text">¡FELICITACIONES!</h1>
+        <img src="imagenes/Insignias/insignias-mohs/01-insignias-mohs-plata.png" alt="Insignia Plata" class="badge-anim">
+        <h2 style="font-family: 'Montserrat';">Insignia Plata (Técnico de Juego) Desbloqueada</h2>
+        <p>Dominas el sistema de competencia y los sorteos de RoboFútbol.</p>
+        <button class="btn-return" onclick="returnToIndex()">
+            <i class="fas fa-arrow-left"></i> Volver al Centro de Comando
+        </button>
+    </div>
+
+    <script>
+        // 1. FUNCIONALIDAD ACORDEÓN
+        function toggleQ(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('i');
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                icon.className = "fas fa-chevron-down";
+            } else {
+                content.style.display = "block";
+                icon.className = "fas fa-chevron-up";
+            }
+        }
+
+        // 2. JUEGO MATCH DE CONCEPTOS
+        const terms = [
+            { id: 1, text: "Formato mixto", type: "term" },
+            { id: 2, text: "Sorteo público", type: "term" },
+            { id: 3, text: "Partido empatado en grupos", type: "term" },
+            { id: 4, text: "Gran Final", type: "term" }
+        ];
+        
+        const defs = [
+            { id: 1, text: "Fase de grupos seguida de eliminación directa.", type: "def" },
+            { id: 2, text: "Define grupos y emparejamientos de forma transparente.", type: "def" },
+            { id: 3, text: "Vale 1 punto para cada equipo.", type: "def" },
+            { id: 4, text: "La juegan los ganadores de las semifinales: define Campeón y Subcampeón.", type: "def" }
+        ];
+
+        // Mezclar definiciones
+        defs.sort(() => Math.random() - 0.5);
+
+        const gameContainer = document.getElementById('matchGame');
+        let selectedTerm = null;
+        let matchesFound = 0;
+
+        function renderGame() {
+            let col1 = document.createElement('div');
+            col1.className = 'column';
+            terms.forEach(t => {
+                let div = document.createElement('div');
+                div.className = 'match-item';
+                div.textContent = t.text;
+                div.dataset.id = t.id;
+                div.dataset.type = 'term';
+                div.onclick = () => selectItem(div);
+                col1.appendChild(div);
+            });
+
+            let col2 = document.createElement('div');
+            col2.className = 'column';
+            defs.forEach(d => {
+                let div = document.createElement('div');
+                div.className = 'match-item';
+                div.textContent = d.text;
+                div.dataset.id = d.id;
+                div.dataset.type = 'def';
+                div.onclick = () => selectItem(div);
+                col2.appendChild(div);
+            });
+
+            gameContainer.appendChild(col1);
+            gameContainer.appendChild(col2);
+        }
+
+        function selectItem(element) {
+            if (element.classList.contains('matched')) return;
+
+            // Si seleccionamos un término
+            if (element.dataset.type === 'term') {
+                if (selectedTerm) selectedTerm.classList.remove('selected');
+                selectedTerm = element;
+                element.classList.add('selected');
+            } 
+            // Si seleccionamos una definición y ya hay término seleccionado
+            else if (element.dataset.type === 'def' && selectedTerm) {
+                if (selectedTerm.dataset.id === element.dataset.id) {
+                    // Match correcto
+                    selectedTerm.classList.remove('selected');
+                    selectedTerm.classList.add('matched');
+                    element.classList.add('matched');
+                    selectedTerm = null;
+                    matchesFound++;
+                    if(matchesFound === 4) {
+                        document.getElementById('finalBtnArea').style.display = 'block';
+                    }
+                } else {
+                    // Error visual
+                    element.style.borderColor = 'red';
+                    setTimeout(() => element.style.borderColor = '#ddd', 500);
+                }
+            }
+        }
+
+        renderGame();
+
+        // 3. LÓGICA DE FINALIZACIÓN
+        function finishModule() {
+            const storageKey = 'makerCourseState'; 
+            const savedState = sessionStorage.getItem(storageKey);
+            
+            // ID del Módulo actual (3) y el siguiente a desbloquear (4)
+            const currentModuleId = 3;
+            const nextModuleId = 4;
+
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                
+                // 1. Marcar como completado
+                if (!state.completedModules.includes(currentModuleId)) {
+                    state.completedModules.push(currentModuleId);
+                }
+
+                // 2. Desbloquear siguiente
+                if (!state.unlockedModules.includes(nextModuleId)) {
+                    state.unlockedModules.push(nextModuleId);
+                }
+
+                // 3. Guardar
+                sessionStorage.setItem(storageKey, JSON.stringify(state));
+                
+                // 4. Mostrar Animación
+                document.getElementById('badgeOverlay').style.display = 'flex';
+                
+            } else {
+                // Fallback para pruebas locales
+                alert("Sesión no detectada. Redirigiendo al inicio.");
+                window.location.href = 'index.html';
+            }
+        }
+
+        function returnToIndex() {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+<script>
+const $=id=>document.getElementById(id);
+function fmt(k){$('tA').classList.toggle('on',k=='A');$('tB').classList.toggle('on',k=='B');const n=(t)=>'<div class="node">'+t+'</div>',a='<i class="fas fa-arrow-right"></i>';$('flow').innerHTML=k=='A'?n('👥 Fase de grupos')+a+n('⚔️ Eliminación directa')+a+n('🏆 Gran Final'):n('⚔️ Eliminación directa')+a+n('🏆 Gran Final');$('fmtTxt').textContent=k=='A'?'Recomendado: asegura un mínimo de partidos por equipo.':'Se usa si hay muy poco tiempo o demasiados participantes. No aplican los Art. 6.3 a 6.5.'}
+function draw(){const t=['Rayos','Titanes','Cóndores','Pumas','Halcones','Jaguares','Cometas','Tigres'].sort(()=>Math.random()-.5);['gA','gB'].forEach((g,i)=>$(g).innerHTML=t.slice(i*4,i*4+4).map((x,k)=>'<span class="team" style="animation-delay:'+k*.15+'s">'+x+'</span>').join(''))}
+let G={a:0,b:0};function goal(k,d){G[k]=Math.max(0,G[k]+d);$('ga'+'N').textContent=G.a;$('gbN').textContent=G.b;const p=G.a>G.b?[3,0]:G.a<G.b?[0,3]:[1,1];$('pa').textContent=p[0]+' pts';$('pb').textContent=p[1]+' pts';$('pa').style.color=p[0]==3?'#39A900':p[0]?'#FF6C00':'#dc3545';$('pb').style.color=p[1]==3?'#39A900':p[1]?'#FF6C00':'#dc3545'}
+let B={};const N={s1a:'1.º Grupo A',s1b:'2.º Grupo B',s2a:'1.º Grupo B',s2b:'2.º Grupo A'};
+function pick(m,k){B['w'+m]=k;B['l'+m]=k=='a'?'b':'a';B.f=null;['a','b'].forEach(x=>{$('s'+m+x).className='slot '+(x==k?'w':'l')});rb()}
+function rb(){const w1=B.w1&&N['s1'+B.w1],w2=B.w2&&N['s2'+B.w2],l1=B.l1&&N['s1'+B.l1],l2=B.l2&&N['s2'+B.l2];$('fa').textContent=w1||'—';$('fb').textContent=w2||'—';$('ta').textContent=l1||'—';$('tb').textContent=l2||'—';['fa','fb'].forEach(x=>$(x).className='slot');$('pod').innerHTML=w1&&w2?'Elige al ganador de la Gran Final':''}
+function fin(k){if(!(B.w1&&B.w2))return;const c=k=='a'?$('fa').textContent:$('fb').textContent,s=k=='a'?$('fb').textContent:$('fa').textContent;$('fa').className='slot '+(k=='a'?'w':'l');$('fb').className='slot '+(k=='b'?'w':'l');$('pod').innerHTML='🥇 Campeón: '+c+'<br>🥈 Subcampeón: '+s}
+function resetBr(){B={};['s1a','s1b','s2a','s2b'].forEach(x=>$(x).className='slot');rb()}
+document.addEventListener('DOMContentLoaded',()=>{fmt('A');goal('a',0);resetBr()});
+</script>
+</body>
+</html>
